@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: androidx.arch.core:core-runtime:2.2.0@aar">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../BlixtStudio-master/android/gradle/caches/transforms-3/a3c52917a756f36d032fd8bd117ea0bc/transformed/core-runtime-2.2.0/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../BlixtStudio-master/android/gradle/caches/transforms-3/a3c52917a756f36d032fd8bd117ea0bc/transformed/core-runtime-2.2.0/res" />
+      <root url="file://$PROJECT_DIR$/../../BlixtStudio-master/android/gradle/caches/transforms-3/a3c52917a756f36d032fd8bd117ea0bc/transformed/core-runtime-2.2.0/AndroidManifest.xml" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../BlixtStudio-master/android/gradle/caches/modules-2/files-2.1/androidx.arch.core/core-runtime/2.2.0/48630ad88f438e5a603ae74cf4858203d1a595c5/core-runtime-2.2.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

@@ -1,0 +1,13 @@
+<component name="libraryTable">
+  <library name="Gradle: androidx.window:window:1.0.0-beta04@aar">
+    <CLASSES>
+      <root url="file://$PROJECT_DIR$/../../BlixtStudio-master/android/gradle/caches/transforms-3/94c6ddaba5d8fe69ea69ee58bc43561b/transformed/jetified-window-1.0.0-beta04/AndroidManifest.xml" />
+      <root url="jar://$PROJECT_DIR$/../../BlixtStudio-master/android/gradle/caches/transforms-3/94c6ddaba5d8fe69ea69ee58bc43561b/transformed/jetified-window-1.0.0-beta04/jars/classes.jar!/" />
+      <root url="file://$PROJECT_DIR$/../../BlixtStudio-master/android/gradle/caches/transforms-3/94c6ddaba5d8fe69ea69ee58bc43561b/transformed/jetified-window-1.0.0-beta04/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$PROJECT_DIR$/../../BlixtStudio-master/android/gradle/caches/modules-2/files-2.1/androidx.window/window/1.0.0-beta04/c05d535f15eafda40ef406aaa4cb9df2d7f5377/window-1.0.0-beta04-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

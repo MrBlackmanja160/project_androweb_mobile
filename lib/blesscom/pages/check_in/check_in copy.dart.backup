@@ -1,0 +1,553 @@
+// import 'dart:developer';
+
+// import 'package:kalbemd/Helper/helper.dart';
+// import 'package:kalbemd/Helper/global.dart';
+// import 'package:kalbemd/blesscom/forms/input_builder.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter/services.dart';
+// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+// import 'package:google_maps_flutter/google_maps_flutter.dart';
+// import 'package:location/location.dart';
+// import 'package:geolocator/geolocator.dart' as geolocator;
+
+// class CheckIn extends StatefulWidget {
+//   final Map<dynamic, dynamic> infoLog;
+
+//   const CheckIn({
+//     required this.infoLog,
+//     Key? key,
+//   }) : super(key: key);
+
+//   @override
+//   _CheckInState createState() => _CheckInState();
+// }
+
+// class _CheckInState extends State<CheckIn> {
+//   bool _checkedIn = false;
+
+//   final List<bool> _toggleTokoBaru = [true, false];
+//   bool _tokoBaru = false;
+
+//   LocationData? currentLocation;
+//   Location location = Location();
+//   Map<MarkerId, Marker> markers = {};
+//   Map<CircleId, Circle> circles = {};
+//   String? error;
+//   bool _loading = false;
+
+//   List<Map<String, String>> _iePilihToko = [];
+//   List<Map<String, String>> _ieBuatToko = [];
+//   List<Map<String, String>> _ieCheckout = [];
+//   final String _addressData = "";
+//   String iduser = "";
+//   String token = "";
+
+//   void _initForm() {
+//     _iePilihToko = [
+//       {
+//         "nm": "iduser",
+//         "jns": "hidden",
+//         "value": iduser,
+//       },
+//       {
+//         "nm": "token",
+//         "jns": "hidden",
+//         "value": token,
+//       },
+//       {
+//         "nm": "temp_idcheckin",
+//         "jns": "hidden",
+//         "value": widget.infoLog["temp_idcheckin"],
+//       },
+//       {
+//         "nm": "lat",
+//         "jns": "hidden",
+//         "value":
+//             currentLocation != null ? currentLocation!.latitude.toString() : "",
+//       },
+//       {
+//         "nm": "lng",
+//         "jns": "hidden",
+//         "value": currentLocation != null
+//             ? currentLocation!.longitude.toString()
+//             : "",
+//       },
+//       {
+//         "nm": "address_data",
+//         "jns": "hidden",
+//         "value": _addressData,
+//       },
+//       {
+//         "nm": "ytTokoBaru",
+//         "jns": "hidden",
+//         "value": "T",
+//       },
+//       {
+//         "nm": "idtoko",
+//         "jns": "selcustomqueryAjax",
+//         "label": "Toko",
+//         "ajaxurl": urlGetSelectAjax,
+//         "required": "Y",
+//         "customquery":
+//             "select a.id,a.nama as text from m_toko a where a.isdeleted=0",
+//       },
+//       {
+//         "nm": "foto_check_in",
+//         "jns": "croppie",
+//         "label": "Foto Check In",
+//       },
+//     ];
+
+//     _ieBuatToko = [
+//       {
+//         "nm": "iduser",
+//         "jns": "hidden",
+//         "value": iduser,
+//       },
+//       {
+//         "nm": "token",
+//         "jns": "hidden",
+//         "value": token,
+//       },
+//       {
+//         "nm": "temp_idcheckin",
+//         "jns": "hidden",
+//         "value": widget.infoLog["temp_idcheckin"],
+//       },
+//       {
+//         "nm": "lat",
+//         "jns": "hidden",
+//         "value":
+//             currentLocation != null ? currentLocation!.latitude.toString() : "",
+//       },
+//       {
+//         "nm": "lng",
+//         "jns": "hidden",
+//         "value": currentLocation != null
+//             ? currentLocation!.longitude.toString()
+//             : "",
+//       },
+//       {
+//         "nm": "address_data",
+//         "jns": "hidden",
+//         "value": _addressData,
+//       },
+//       {
+//         "nm": "ytTokoBaru",
+//         "jns": "hidden",
+//         "value": "Y",
+//       },
+//       {
+//         "nm": "idtoko",
+//         "jns": "hidden",
+//         "value": "",
+//       },
+//       {
+//         "nm": "nama",
+//         "jns": "text",
+//         "label": "Nama Toko",
+//         "required": "Y",
+//       },
+//       {
+//         "nm": "kode",
+//         "jns": "text",
+//         "label": "Kode Toko",
+//         "required": "Y",
+//       },
+//       {
+//         "nm": "idgrouptoko",
+//         "jns": "selcustomqueryAjax",
+//         "label": "Group Toko",
+//         "ajaxurl": urlGetSelectAjax,
+//         "required": "Y",
+//         "customquery":
+//             "select id,nama as text from m_grouptoko a where a.isdeleted=0",
+//       },
+//       {
+//         "nm": "idkelurahan",
+//         "jns": "selcustomqueryAjax",
+//         "label": "Kelurahan",
+//         "ajaxurl": urlGetSelectAjax,
+//         "required": "Y",
+//         "customquery":
+//             "SELECT a.id,CONCAT(a.nama,', ',b.nama,', ',c.nama,', ',d.nama) AS text FROM m_kelurahan a INNER JOIN m_kecamatan b ON a.idkecamatan=b.id INNER JOIN m_kabupaten c ON b.idkabupaten=c.id INNER JOIN m_provinsi d ON c.idprovinsi=d.id AND a.isdeleted=0",
+//       },
+//       {
+//         "nm": "alamat",
+//         "jns": "text",
+//         "label": "Alamat",
+//         "required": "Y",
+//       },
+//       {
+//         "nm": "idtypelokasi",
+//         "jns": "selcustomqueryAjax",
+//         "label": "Type Lokasi",
+//         "ajaxurl": urlGetSelectAjax,
+//         "required": "Y",
+//         "customquery":
+//             "select id,nama as text from m_typelokasi a where a.isdeleted=0",
+//       },
+//       {
+//         "nm": "foto",
+//         "jns": "croppie",
+//         "label": "Foto Check In",
+//       },
+//     ];
+
+//     _ieCheckout = [
+//       {
+//         "nm": "iduser",
+//         "jns": "hidden",
+//         "value": iduser,
+//       },
+//       {
+//         "nm": "token",
+//         "jns": "hidden",
+//         "value": token,
+//       },
+//       {
+//         "nm": "temp_idcheckin",
+//         "jns": "hidden",
+//         "value": widget.infoLog["temp_idcheckin"],
+//       },
+//       {
+//         "nm": "lat",
+//         "jns": "hidden",
+//         "value":
+//             currentLocation != null ? currentLocation!.latitude.toString() : "",
+//       },
+//       {
+//         "nm": "lng",
+//         "jns": "hidden",
+//         "value": currentLocation != null
+//             ? currentLocation!.longitude.toString()
+//             : "",
+//       },
+//       {
+//         "nm": "address_data",
+//         "jns": "hidden",
+//         "value": _addressData,
+//       },
+//       {
+//         "nm": "foto_check_out",
+//         "jns": "croppie",
+//         "label": "Foto Check Out",
+//       },
+//     ];
+//   }
+
+//   _addMarker(LatLng position, String id, BitmapDescriptor descriptor,
+//       String title, double accuracy) {
+//     MarkerId markerId = MarkerId(id);
+//     CircleId circleId = CircleId(id);
+
+//     // Location marker
+//     Marker marker = Marker(
+//       markerId: markerId,
+//       icon: descriptor,
+//       position: position,
+//       infoWindow: InfoWindow(
+//         title: title,
+//       ),
+//     );
+
+//     // Location accuracy (circle)
+//     Circle circle = Circle(
+//       circleId: circleId,
+//       center: position,
+//       radius: accuracy,
+//       fillColor: Colors.orange.withOpacity(.5),
+//       strokeWidth: 0,
+//     );
+//     markers[markerId] = marker;
+//     circles[circleId] = circle;
+//   }
+
+//   Future<geolocator.Position> _determinePosition() async {
+//     bool serviceEnabled;
+//     geolocator.LocationPermission permission;
+
+//     serviceEnabled = await geolocator.Geolocator.isLocationServiceEnabled();
+//     if (!serviceEnabled) {
+//       return Future.error('Location services are disabled.');
+//     }
+
+//     permission = await geolocator.Geolocator.checkPermission();
+//     if (permission == geolocator.LocationPermission.deniedForever) {
+//       return Future.error(
+//           'Location permissions are permanently denied, we cannot request permissions.');
+//     }
+
+//     if (permission == geolocator.LocationPermission.denied) {
+//       permission = await geolocator.Geolocator.requestPermission();
+//       if (permission != geolocator.LocationPermission.whileInUse &&
+//           permission != geolocator.LocationPermission.always) {
+//         return Future.error(
+//             'Location permissions are denied (actual value: $permission).');
+//       }
+//     }
+    
+//     return await geolocator.Geolocator.getCurrentPosition(
+//         desiredAccuracy: geolocator.LocationAccuracy.high);
+//   }
+
+//   Future<void> _getLocation() async {
+//     setState(() {
+//       log("Getting location");
+//       _loading = true;
+//     });
+//     try {
+//       _determinePosition().then((position) {
+//         if (position.isMocked) {
+//           // fakenotice();
+//           return;
+//         }
+//       });
+//       final LocationData locationResult = await location.getLocation();
+
+//       // Final current location result
+//       currentLocation = locationResult;
+
+//       _loading = false;
+//       _addMarker(
+//           LatLng(currentLocation!.latitude!, currentLocation!.longitude!),
+//           "Lokasi Anda",
+//           BitmapDescriptor.defaultMarker,
+//           "Lokasi Anda",
+//           currentLocation!.accuracy!);
+
+
+//       // Get address data
+//       // String lat = currentLocation!.latitude.toString();
+//       // String lng = currentLocation!.longitude.toString();
+//       // String url =
+//       //     "https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=$lat&lon=$lng";
+//       // HttpPostResponse response = await Helper.sendHttpPost(url);
+
+//       // if (response.success) {
+//       //   _addressData = response.data.toString();
+//       // } else {
+//       //   if (mounted) {
+//       //     Helper.showAlert(
+//       //       context: context,
+//       //       message: response.error,
+//       //       details: response.responseBody,
+//       //       type: AlertType.error,
+//       //       onClose: () => Navigator.of(context).pop(),
+//       //     );
+//       //   }
+//       // }
+
+//       // Get iduser and token
+//       iduser = await Helper.getPrefs("iduser");
+//       token = await Helper.getPrefs("token");
+
+//       // Initialize forms
+//       _initForm();
+
+//       if (mounted) {
+//         setState(() {});
+//       }
+//     } on PlatformException catch (err) {
+//       if (mounted) {
+//         setState(() {
+//           error = err.code;
+//           _loading = true;
+//         });
+//       }
+//     }
+//   }
+
+//   void _toggleButtonTokoBaru(int index) {
+//     setState(() {
+//       for (int buttonIndex = 0;
+//           buttonIndex < _toggleTokoBaru.length;
+//           buttonIndex++) {
+//         if (buttonIndex == index) {
+//           _toggleTokoBaru[buttonIndex] = true;
+//         } else {
+//           _toggleTokoBaru[buttonIndex] = false;
+//         }
+//       }
+
+//       _tokoBaru = _toggleTokoBaru[1];
+//     });
+//   }
+
+//   void _onSubmit(dynamic response) {
+//     bool sukses = response["Sukses"] == "Y";
+//     String pesan = response["Pesan"];
+
+//     if (mounted) {
+//       Helper.showAlert(
+//         context: context,
+//         message: pesan,
+//         type: sukses ? AlertType.success : AlertType.error,
+//         onClose: sukses ? () => Navigator.of(context).pop() : null,
+//       );
+//     }
+
+//     // showDialog(
+//     //   context: context,
+//     //   builder: (context) => AlertDialog(
+//     //     content: Column(
+//     //       mainAxisSize: MainAxisSize.min,
+//     //       children: [
+//     //         Padding(
+//     //           padding: const EdgeInsets.all(16),
+//     //           child: Icon(
+//     //             icon,
+//     //             color: Colors.orange,
+//     //             size: 64,
+//     //           ),
+//     //         ),
+//     //         Text(pesan),
+//     //       ],
+//     //     ),
+//     //     actions: [
+//     //       ElevatedButton(
+//     //         onPressed: () => Navigator.of(context).pop(),
+//     //         child: const Text("OK"),
+//     //       )
+//     //     ],
+//     //   ),
+//     // ).then((value) {
+//     //   if (sukses) {
+//     //     Navigator.of(context).pop();
+//     //   }
+//     // });
+//   }
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     _getLocation();
+
+//     _checkedIn = widget.infoLog["status_check_in"] == "Y";
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       appBar: AppBar(
+//         title: Text(!_checkedIn ? "Check In" : "Check Out"),
+//         actions: [
+//           IconButton(
+//             onPressed: !_loading ? _getLocation : null,
+//             icon: const Icon(
+//               FontAwesomeIcons.sync,
+//               size: 18,
+//             ),
+//           ),
+//         ],
+//       ),
+//       body: Column(
+//         children: [
+//           Container(
+//             color: Colors.grey[900],
+//             height: 300,
+//             child: Center(
+//               child: _loading
+//                   ? const Center(
+//                       child: CircularProgressIndicator(),
+//                     )
+//                   : GoogleMap(
+//                       initialCameraPosition: CameraPosition(
+//                           zoom: 18,
+//                           target: LatLng(currentLocation!.latitude!,
+//                               currentLocation!.longitude!)),
+//                       markers: Set<Marker>.of(markers.values),
+//                       circles: Set<Circle>.of(circles.values),
+//                       mapType: MapType.normal,
+//                       tiltGesturesEnabled: true,
+//                       compassEnabled: true,
+//                       scrollGesturesEnabled: true,
+//                       zoomGesturesEnabled: true,
+//                       onMapCreated: (GoogleMapController controller) {
+//                         // controllersku.complete(controller);
+//                         controller = controller;
+//                         // controllersku = controller;
+//                       },
+//                       // myLocationEnabled: true,
+//                     ),
+//             ),
+//           ),
+//           Expanded(
+//             child: SingleChildScrollView(
+//               child: Padding(
+//                 padding: const EdgeInsets.all(16),
+//                 child: Column(
+//                   children: [
+//                     if (!_checkedIn)
+//                       LayoutBuilder(
+//                         builder: (context, constraints) => Padding(
+//                           padding: const EdgeInsets.symmetric(vertical: 8),
+//                           child: ToggleButtons(
+//                             borderRadius: BorderRadius.circular(8),
+//                             constraints: BoxConstraints.expand(
+//                                 height: 40,
+//                                 width: constraints.maxWidth /
+//                                         _toggleTokoBaru.length -
+//                                     4),
+//                             children: [
+//                               Row(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 children: const [
+//                                   Padding(
+//                                     padding: EdgeInsets.only(right: 8),
+//                                     child: Icon(
+//                                       FontAwesomeIcons.bars,
+//                                       size: 16,
+//                                     ),
+//                                   ),
+//                                   Text("Pilih Toko"),
+//                                 ],
+//                               ),
+//                               Row(
+//                                 mainAxisAlignment: MainAxisAlignment.center,
+//                                 children: const [
+//                                   Padding(
+//                                     padding: EdgeInsets.only(right: 8),
+//                                     child: Icon(
+//                                       FontAwesomeIcons.plus,
+//                                       size: 16,
+//                                     ),
+//                                   ),
+//                                   Text("Toko Baru"),
+//                                 ],
+//                               ),
+//                             ],
+//                             onPressed: _toggleButtonTokoBaru,
+//                             isSelected: _toggleTokoBaru,
+//                           ),
+//                         ),
+//                       ),
+//                     _loading
+//                         ? const LinearProgressIndicator()
+//                         : InputBuilder(
+//                             ieMaster: _checkedIn
+//                                 ? _ieCheckout
+//                                 : _tokoBaru
+//                                     ? _ieBuatToko
+//                                     : _iePilihToko,
+//                             actionUrl: _checkedIn ? urlCheckOut : urlCheckIn,
+//                             onSubmit: _onSubmit,
+//                             submitLabel: _checkedIn
+//                                 ? "Check Out"
+//                                 : _tokoBaru
+//                                     ? "Simpan & Check In"
+//                                     : "Check In",
+//                           ),
+//                     const SizedBox(
+//                       height: 20,
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }

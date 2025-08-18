@@ -1,0 +1,167 @@
+import 'package:kalbemd/blesscom/models/model_dropdown.dart';
+import 'package:kalbemd/blesscom/forms/input_date.dart';
+import 'package:kalbemd/blesscom/forms/input_dropdown.dart';
+import 'package:kalbemd/blesscom/forms/input_photo.dart';
+import 'package:kalbemd/blesscom/forms/input_text.dart';
+import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+
+class InputBuilder extends StatefulWidget {
+  final List<Map<String, String>> ieMaster;
+  final Function(Map<String, dynamic>)? onSubmit;
+  final String submitLabel;
+
+  const InputBuilder({
+    required this.ieMaster,
+    this.onSubmit,
+    this.submitLabel = "OK",
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _InputBuilderState createState() => _InputBuilderState();
+}
+
+class _InputBuilderState extends State<InputBuilder> {
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  final List<TextEditingController> _controllers = [];
+  final List<Widget> _widgets = [];
+
+  void _buildForm() {
+    // Clear all
+    _widgets.clear();
+    _controllers.clear();
+    _widgets.clear();
+
+    // Build widgets
+    widget.ieMaster.asMap().forEach((index, input) {
+      var jns = input["jns"] ?? "";
+      var label = input["label"] ?? "";
+      var ajaxurl = input["ajaxurl"] ?? "";
+      var customquery = input["customquery"] ?? "";
+      var required = input["required"] ?? "";
+      var mininputchar = int.parse(input["mininputchar"] ?? "0");
+
+      // Create controller
+      _controllers.add(TextEditingController());
+
+      // Validator for required fields
+      bool isRequired = required == "Y";
+
+      // Create text input
+      switch (jns) {
+        case "text":
+          _widgets.add(
+            InputText(
+              controller: _controllers[index],
+              label: label,
+              validator: isRequired ? _validatorRequired : null,
+            ),
+          );
+          break;
+        case "selcustomqueryAjax":
+          ModelDropdown selVal = ModelDropdown();
+          _widgets.add(InputDropdown(
+            value: selVal,
+            ajaxUrl: ajaxurl,
+            customQuery: customquery,
+            label: label,
+            hint: label,
+            hintSearch: "Pencarian",
+            minInputChar: mininputchar,
+            validator: isRequired ? _validatorRequired : null,
+            onChange: (val) => setState(() {
+              _controllers[index].text = val.id;
+            }),
+          ));
+          break;
+        case "date":
+          _widgets.add(InputDate(
+            label: label,
+            hint: label,
+            validator: isRequired ? _validatorRequired : null,
+            onChange: (val) => setState(() {
+              if (val != null) {
+                _controllers[index].text = DateFormat("yyyy-MM-dd").format(val);
+              }
+            }),
+          ));
+          break;
+        case "croppie":
+          _widgets.add(InputPhoto(
+            label: label,
+          ));
+          break;
+        default:
+          _widgets.add(
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text("'$jns' Not Implemented yet"),
+            ),
+          );
+          break;
+      }
+    });
+
+    // Submit button
+    _widgets.add(
+      Container(
+        width: double.infinity,
+        child: ElevatedButton(
+          onPressed: _submit,
+          child: Text(widget.submitLabel),
+        ),
+      ),
+    );
+  }
+
+  String? _validatorRequired(String? value) {
+    if (value == null || value.isEmpty) {
+      return 'Harap diisi';
+    }
+    return null;
+  }
+
+  void _submit() {
+    // Validate form
+    if (_formKey.currentState!.validate()) {
+      // Result in json object
+      Map<String, dynamic> result = {};
+
+      widget.ieMaster.asMap().forEach((index, input) {
+        String nm = input["nm"] ?? "";
+        String value = _controllers[index].text;
+
+        // Add key value pair to result
+        result[nm] = value;
+      });
+
+      // Fire on submit event
+      if (widget.onSubmit != null) {
+        widget.onSubmit!(result);
+      }
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _buildForm();
+  }
+
+  @override
+  void didUpdateWidget(covariant InputBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _buildForm();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: _widgets,
+      ),
+    );
+  }
+}

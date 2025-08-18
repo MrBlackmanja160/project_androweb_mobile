@@ -1,0 +1,289 @@
+import 'package:kalbemd/blesscom/pages/distribusi/distribusi.dart';
+import 'package:kalbemd/blesscom/pages/foto_produk/foto_produk.dart';
+import 'package:kalbemd/blesscom/pages/foto_smd/foto_smd.dart';
+import 'package:kalbemd/blesscom/pages/input_po/input_po.dart';
+import 'package:kalbemd/blesscom/pages/pembelian/pembelian.dart';
+import 'package:kalbemd/blesscom/pages/pengembalian/pengembalian.dart';
+import 'package:kalbemd/blesscom/pages/penjualan/penjualan.dart';
+import 'package:kalbemd/blesscom/pages/setor_uang/setor_uang.dart';
+import 'package:kalbemd/blesscom/widgets/menu_item.dart';
+import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+class MenuList extends StatefulWidget {
+  final dynamic infoLog;
+  final bool loading;
+  final Function()? onPop;
+  const MenuList({
+    required this.infoLog,
+    this.loading = false,
+    this.onPop,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _MenuListState createState() => _MenuListState();
+}
+
+class _MenuListState extends State<MenuList> {
+  bool _checkedIn = false;
+  bool _typeIsToko = false;
+  bool _typeIsDistributor = false;
+
+  void _initMenu() {
+    // Type toko
+    // _checkedIn = widget.infoLog["status_check_in"] == "Y";
+    // _typeIsToko = widget.infoLog["typeToko"] == "TOKO";
+    // _typeIsDistributor = widget.infoLog["typeToko"] == "DISTRIBUTOR";
+    _checkedIn = true;
+    _typeIsToko = true;
+    _typeIsDistributor = true;
+  }
+
+  void _goToPenjualan() {
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => Penjualan(
+              infoLog: widget.infoLog,
+            ),
+          ),
+        )
+        .then(
+          (value) => widget.onPop?.call(),
+        );
+  }
+
+  void _goInputPO() {
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => InputPO(
+              infoLog: widget.infoLog,
+            ),
+          ),
+        )
+        .then(
+          (value) => widget.onPop?.call(),
+        );
+  }
+
+  void _goToDistribusi() {
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => Distribusi(
+              infoLog: widget.infoLog,
+              // master: {
+              //   "temp_id": "22277",
+              //   "status": "O",
+              //   "nobukti": "WOW129831",
+              //   "tanggal": "20 Des 2021",
+              // },
+            ),
+          ),
+        )
+        .then(
+          (value) => widget.onPop?.call(),
+        );
+  }
+
+  void _goToKuesioner() {}
+  void _goToFotoProduk() {
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => FotoProduk(
+              infoLog: widget.infoLog,
+            ),
+          ),
+        )
+        .then(
+          (value) => widget.onPop?.call(),
+        );
+  }
+
+  void _goToFotoProdukSMD() {
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => FotoSMD(
+              infoLog: widget.infoLog,
+            ),
+          ),
+        )
+        .then(
+          (value) => widget.onPop?.call(),
+        );
+  }
+
+  void _goToPembelian() {
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => Pembelian(
+              infoLog: widget.infoLog,
+            ),
+          ),
+        )
+        .then(
+          (value) => widget.onPop?.call(),
+        );
+  }
+
+  void _goToPengembalian() {
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => Pengembalian(
+              infoLog: widget.infoLog,
+            ),
+          ),
+        )
+        .then(
+          (value) => widget.onPop?.call(),
+        );
+  }
+
+  void _goToSetorUang() {
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            builder: (context) => SetorUang(
+              infoLog: widget.infoLog,
+            ),
+          ),
+        )
+        .then(
+          (value) => widget.onPop?.call(),
+        );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _initMenu();
+  }
+
+  @override
+  void didUpdateWidget(covariant MenuList oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _initMenu();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return widget.loading
+        ? const LinearProgressIndicator()
+        : Wrap(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    child: MenuItem(
+                      image: "assets/images/tokoku.png",
+                      icon: FontAwesomeIcons.cashRegister,
+                      name: "Penjualan",
+                      onTap: _checkedIn && _typeIsToko ? _goToPenjualan : null,
+                    ),
+                  ),
+                  Expanded(
+                    child: MenuItem(
+                      image: "assets/images/tokoku.png",
+                      icon: FontAwesomeIcons.expandArrowsAlt,
+                      name: "Distribusi Produk",
+                      onTap: _checkedIn && _typeIsToko ? _goToDistribusi : null,
+                    ),
+                  ),
+                ],
+              ),
+              // Row(
+              //   children: [
+              //     Expanded(
+              //       child: MenuItem(
+              //         image: "assets/images/tokoku.png",
+              //         icon: FontAwesomeIcons.expandArrowsAlt,
+              //         name: "Distribusi Produk",
+              //         onTap: _checkedIn && _typeIsToko ? _goToDistribusi : null,
+              //       ),
+              //     ),
+              //     // Expanded(
+              //     //   child: MenuItem(
+              //     //     image: "assets/images/tokoku.png",
+              //     //     icon: FontAwesomeIcons.clipboardList,
+              //     //     name: "Input Kuesioner",
+              //     //     onTap: _checkedIn && _typeIsToko ? _goToKuesioner : null,
+              //     //   ),
+              //     // ),
+              //   ],
+              // ),
+              Row(
+                children: [
+                  Expanded(
+                    child: MenuItem(
+                      image: "assets/images/tokoku.png",
+                      icon: FontAwesomeIcons.cameraRetro,
+                      name: "Foto Activity Motoris",
+                      onTap: _checkedIn && _typeIsToko ? _goToFotoProduk : null,
+                    ),
+                  ),
+                  Expanded(
+                    child: MenuItem(
+                      image: "assets/images/tokoku.png",
+                      icon: FontAwesomeIcons.moneyBillWave,
+                      name: "Foto Activity SMD",
+                      onTap:
+                          _checkedIn && _typeIsToko ? _goToFotoProdukSMD : null,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: MenuItem(
+                      image: "assets/images/tokoku.png",
+                      icon: FontAwesomeIcons.cartPlus,
+                      name: "Pembelian",
+                      onTap: _checkedIn && _typeIsDistributor
+                          ? _goToPembelian
+                          : null,
+                    ),
+                  ),
+                  Expanded(
+                    child: MenuItem(
+                      image: "assets/images/tokoku.png",
+                      icon: FontAwesomeIcons.arrowCircleLeft,
+                      name: "Pengembalian",
+                      onTap: _checkedIn && _typeIsDistributor
+                          ? _goToPengembalian
+                          : null,
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: MenuItem(
+                      image: "assets/images/tokoku.png",
+                      icon: FontAwesomeIcons.paperclip,
+                      name: "Input PO",
+                      onTap:
+                          _checkedIn && _typeIsDistributor ? _goInputPO : null,
+                    ),
+                  ),
+                  Expanded(
+                    child: MenuItem(
+                      image: "assets/images/tokoku.png",
+                      icon: FontAwesomeIcons.moneyBillWave,
+                      name: "Setor Uang",
+                      onTap: _checkedIn && _typeIsToko ? _goToSetorUang : null,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          );
+  }
+}
