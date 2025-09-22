@@ -12,10 +12,15 @@ class FotoSMDSubDetail extends StatefulWidget {
   final dynamic infoLog;
   final dynamic master;
   final ModelJenisFotoSMD masterSub;
+  final String? queryFotoRakNdb;
+  final String? queryKeteranganRakNdb;
+
   const FotoSMDSubDetail({
     required this.infoLog,
     required this.master,
     required this.masterSub,
+    this.queryFotoRakNdb,
+    this.queryKeteranganRakNdb,
     Key? key,
   }) : super(key: key);
 
@@ -24,7 +29,7 @@ class FotoSMDSubDetail extends StatefulWidget {
 }
 
 class _FotoSMDSubDetailState extends State<FotoSMDSubDetail> {
-  List<ModelJenisFotoSMDItem> _data = [];
+  final List<ModelJenisFotoSMDItem> _data = [];
   bool _loading = false;
   bool _editable = false;
 
@@ -33,13 +38,8 @@ class _FotoSMDSubDetailState extends State<FotoSMDSubDetail> {
         widget.infoLog["typeToko"] == "TOKO" &&
         widget.master["status"] == "O";
 
-    if (mounted) {
-      setState(() {
-        _loading = true;
-      });
-    }
+    if (mounted) setState(() => _loading = true);
 
-    // Request data
     HttpPostResponse response = await Helper.sendHttpPost(
       urlFotoActivitySMDDetailSub,
       postData: {
@@ -50,43 +50,44 @@ class _FotoSMDSubDetailState extends State<FotoSMDSubDetail> {
       },
     );
 
-    // Response
     if (response.success) {
-      bool sukses = response.data["Sukses"] == "Y";
-      String pesan = response.data["Pesan"];
+      final bool sukses = response.data["Sukses"] == "Y";
+      final String pesan = response.data["Pesan"];
 
       if (sukses) {
         _data.clear();
-        for (var row in response.data["rows"]) {
+
+        for (final row in (response.data["rows"] as List? ?? const [])) {
+          final r = row as Map<String, dynamic>;
+          String s(String k, [String d = '']) => r[k]?.toString() ?? d;
+
           _data.add(ModelJenisFotoSMDItem(
-            id: row["id"],
-            tempid: row["temp_id"],
-            idjenisphoto: row["idjenisphoto"],
-            foto: row["foto"],
-            remark: row["remark"],
-            lokasi: row["lokasi"],
-            lokasidisplay: row["lokasidisplay"],
-            brand: row["brand"],
-            produk: row["produk"],
-            qty: row["qty"],
-            idlokasi: row["idlokasi"],
-            idbrand: row["idbrand"],
-            idproduk: row["idproduk"],
-            keterangan: row["keterangan"],
-            idketerangan: row["idketerangan"],
-            idkelompoknds: row["idkelompoknds"],
-            idjenisnds: row["idjenisnds"],
-            kelompoknds: row["kelompoknds"],
-            jenisnds: row["jenisnds"],
+            id: s("id"),
+            tempid: s("temp_id"),
+            idjenisphoto: s("idjenisphoto"),
+            foto: s("foto"),
+            remark: s("remark"),
+            lokasi: s("lokasi"),
+            lokasidisplay: s("lokasidisplay"),
+            brand: s("brand"),
+            produk: s("produk"),
+            qty: s("qty", "0"),
+            idlokasi: s("idlokasi"),
+            idbrand: s("idbrand"),
+            idproduk: s("idproduk"),
+            keterangan: s("keterangan"),
+            idketerangan: s("idketerangan"),
+            idkelompoknds: s("idkelompoknds"),
+            idjenisnds: s("idjenisnds"),
+            kelompoknds: s("kelompoknds"),
+            jenisnds: s("jenisnds"),
+            fotoRakNdb: s("foto_rak_ndb"),
+            keteranganRakNdb: s("keterangan_rak_ndb"),
           ));
         }
       } else {
         if (mounted) {
-          Helper.showAlert(
-            context: context,
-            message: pesan,
-            type: AlertType.error,
-          );
+          Helper.showAlert(context: context, message: pesan, type: AlertType.error);
         }
       }
     } else {
@@ -100,11 +101,7 @@ class _FotoSMDSubDetailState extends State<FotoSMDSubDetail> {
       }
     }
 
-    if (mounted) {
-      setState(() {
-        _loading = false;
-      });
-    }
+    if (mounted) setState(() => _loading = false);
   }
 
   void _addItem({ModelJenisFotoSMDItem? item}) {
@@ -114,12 +111,20 @@ class _FotoSMDSubDetailState extends State<FotoSMDSubDetail> {
             builder: (context) => FotoSMDSubdetailAdd(
               item: item,
               masterSub: widget.masterSub,
-              queryLokasiDisplay: widget.infoLog["infoLog"]["query_lokasi_display"],
-              queryBrandProduk: widget.infoLog["infoLog"]["query_brand_produk"],
+              queryLokasiDisplay:
+                  widget.infoLog["infoLog"]["query_lokasi_display"],
+              queryBrandProduk:
+                  widget.infoLog["infoLog"]["query_brand_produk"],
               queryProduk: widget.infoLog["infoLog"]["query_add_produkkalbe"],
-              queryKeterangan: widget.infoLog["infoLog"]["query_keterangan"],
-              queryKelompokNds: widget.infoLog["infoLog"]["query_kelompoknds"],
+              queryKeterangan:
+                  widget.infoLog["infoLog"]["query_keterangan"],
+              queryKelompokNds:
+                  widget.infoLog["infoLog"]["query_kelompoknds"],
               queryJenisNds: widget.infoLog["infoLog"]["query_jenisnds"],
+              queryFotoRakNdb:
+                  widget.infoLog["infoLog"]["query_foto_rak_ndb"]?.toString() ?? "",
+              queryKeteranganRakNdb:
+                  widget.infoLog["infoLog"]["query_keterangan_rak_ndb"]?.toString() ?? "",
             ),
           ),
         )
@@ -137,234 +142,175 @@ class _FotoSMDSubDetailState extends State<FotoSMDSubDetail> {
     if (_loading) {
       return const LinearProgressIndicator();
     }
-    // return Container(
-    //   width: double.infinity,
-    //   padding: const EdgeInsets.symmetric(horizontal: 10),
-    //   child: Column(children: [
-    //     if (_data.isEmpty) const Text("Tidak ada data"),
-    //     ...List.generate(
-    //       _data.length,
-    //       (index) => Card(
-    //         child: InkWell(
-    //           onTap: _editable
-    //               ? () => _addItem(
-    //                     item: _data[index],
-    //                   )
-    //               : null,
-    //           child: Padding(
-    //             padding: const EdgeInsets.all(16),
-    //             child: Row(
-    //               children: [
-    //                 BokiImageNetwork(
-    //                   url:
-    //                       "$baseURL/assets/images/lampiran/${_data[index].foto}",
-    //                   width: 56,
-    //                 ),
-    //                 Expanded(
-    //                   child: Padding(
-    //                     padding: const EdgeInsets.only(left: 16),
-    //                     child: Column(
-    //                       crossAxisAlignment: CrossAxisAlignment.start,
-    //                       children: [
-    //                         Row(
-    //                           children: [
-    //                             Icon(
-    //                               FontAwesomeIcons.boxes,
-    //                               size: 16,
-    //                               color: Theme.of(context).primaryColor,
-    //                             ),
-    //                             Expanded(
-    //                               child: Padding(
-    //                                 padding: const EdgeInsets.only(left: 8),
-    //                                 child: Text(
-    //                                   _data[index].lokasidisplay,
-    //                                   style: textStyleBold,
-    //                                 ),
-    //                               ),
-    //                             ),
-    //                           ],
-    //                         ),
-    //                         const Divider(),
-    //                         Text(
-    //                           _data[index].brand,
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   ),
-    //                 )
-    //               ],
-    //             ),
-    //           ),
-    //         ),
-    //       ),
-    //     ),
-    //     if (_editable)
-    //       SizedBox(
-    //         width: double.infinity,
-    //         child: OutlinedButton(
-    //           onPressed: () => _addItem(),
-    //           child: Row(
-    //             mainAxisAlignment: MainAxisAlignment.center,
-    //             children: const [
-    //               Icon(
-    //                 FontAwesomeIcons.plus,
-    //                 size: 16,
-    //               ),
-    //               SizedBox(width: 8),
-    //               Text("Tambah Foto"),
-    //             ],
-    //           ),
-    //         ),
-    //       ),
-    //     const SizedBox(
-    //       height: 16,
-    //     ),
-    //   ]),
-    // );
 
-   return Container(
-  width: double.infinity,
-  padding: const EdgeInsets.symmetric(horizontal: 10),
-  child: Column(
-    children: [
-      if (_data.isEmpty)
-        const Text("Tidak ada data"),
-      ...List.generate(
-        _data.length,
-        (index) => Card(
-          elevation: 4, // Elevasi untuk memberikan efek bayangan
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(12), // Membuat sudut lebih halus
-          ),
-          child: InkWell(
-            onTap: _editable
-                ? () => _addItem(
-                      item: _data[index],
-                    )
-                : null,
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Gambar di sebelah kiri
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(10), // Rounded corners untuk gambar
-                    child: BokiImageNetwork(
-                      url: "$baseURL/assets/images/lampiran/${_data[index].foto}",
-                      width: 80,
-                      height: 80,
-                      fit: BoxFit.cover,
-                    ),
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 10),
+      child: Column(
+        children: [
+          if (_data.isEmpty) const Text("Tidak ada data"),
+          ...List.generate(
+            _data.length,
+            (index) => Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: InkWell(
+                onTap: _editable
+                    ? () => _addItem(item: _data[index])
+                    : null,
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Gambar utama
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: BokiImageNetwork(
+                          url:
+                              "$baseURL/assets/images/lampiran/${_data[index].foto}",
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+
+                      // Detail teks
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              children: [
+                                const Icon(Icons.location_on, size: 16),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    _data[index].lokasidisplay,
+                                    style: textStyleBold.copyWith(fontSize: 16),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            const Divider(),
+
+                            Row(
+                              children: [
+                                const Icon(Icons.label, size: 16),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    _data[index].brand,
+                                    style: textStyleRegular.copyWith(fontSize: 14),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            const Divider(),
+
+                            Row(
+                              children: [
+                                const Icon(Icons.shopping_cart, size: 16),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    _data[index].produk,
+                                    style: textStyleRegular.copyWith(fontSize: 14),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8),
+                            const Divider(),
+
+                            Row(
+                              children: [
+                                const Icon(Icons.storage, size: 16),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    "Stok: ${_data[index].qty}",
+                                    style: textStyleRegular.copyWith(fontSize: 14),
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            //  Foto & Keterangan Rak NDB hanya kalau jenisnds == "Ada Rak NDB"
+                            if (_data[index].jenisnds == "Ada Rak NDB") ...[
+                              if (_data[index].fotoRakNdb?.isNotEmpty ?? false) ...[
+                                const SizedBox(height: 8),
+                                const Divider(),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.photo, size: 16),
+                                    const SizedBox(width: 8),
+                                    Text("Foto Rak NDB:", style: textStyleBold),
+                                  ],
+                                ),
+                                const SizedBox(height: 8),
+                                BokiImageNetwork(
+                                  url:
+                                      "$baseURL/assets/images/lampiran/${_data[index].fotoRakNdb!}",
+                                  width: 80,
+                                  height: 80,
+                                  fit: BoxFit.cover,
+                                ),
+                              ],
+                              if (_data[index].keteranganRakNdb?.isNotEmpty ?? false) ...[
+                                const SizedBox(height: 8),
+                                const Divider(),
+                                Row(
+                                  children: [
+                                    const Icon(Icons.notes, size: 16),
+                                    const SizedBox(width: 8),
+                                    Expanded(
+                                      child: Text(
+                                        _data[index].keteranganRakNdb!,
+                                        style: textStyleRegular.copyWith(fontSize: 14),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ],
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                  const SizedBox(width: 16),
-                  // Keterangan di sebelah kanan gambar
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Lokasi Display dengan ikon
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.location_on,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              _data[index].lokasidisplay,
-                              style: textStyleBold.copyWith(
-                                fontSize: 16,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        const Divider(), // Pemisah antar informasi
-                        // Brand dengan ikon
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.label,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              _data[index].brand,
-                              style: textStyleRegular.copyWith(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        const Divider(), // Pemisah antar informasi
-                        // Produk dengan ikon
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.shopping_cart,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              _data[index].produk,
-                              style: textStyleRegular.copyWith(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        const Divider(), // Pemisah antar informasi
-                        // Stok dengan ikon
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.storage,
-                              size: 16,
-                            ),
-                            const SizedBox(width: 8),
-                            Text(
-                              "Stok: ${_data[index].qty}",
-                              style: textStyleRegular.copyWith(
-                                fontSize: 14,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
           ),
-        ),
-      ),
-      if (_editable)
-        SizedBox(
-          width: double.infinity,
-          child: OutlinedButton(
-            onPressed: () => _addItem(),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: const [
-                Icon(
-                  FontAwesomeIcons.plus,
-                  size: 16,
+          if (_editable)
+            SizedBox(
+              width: double.infinity,
+              child: OutlinedButton(
+                onPressed: () => _addItem(),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: const [
+                    Icon(FontAwesomeIcons.plus, size: 16),
+                    SizedBox(width: 8),
+                    Text("Tambah Foto"),
+                  ],
                 ),
-                SizedBox(width: 8),
-                Text("Tambah Foto"),
-              ],
+              ),
             ),
-          ),
-        ),
-      const SizedBox(height: 16),
-    ],
-  ),
-);
-
-
+          const SizedBox(height: 16),
+        ],
+      ),
+    );
   }
 }

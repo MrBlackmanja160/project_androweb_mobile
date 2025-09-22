@@ -275,7 +275,7 @@ class _CheckInState extends State<CheckIn> {
     ];
   }
 
-  _addMarker(LatLng position, String id, BitmapDescriptor descriptor,
+  void _addMarker(LatLng position, String id, BitmapDescriptor descriptor,
       String title, double accuracy) {
     MarkerId markerId = MarkerId(id);
     CircleId circleId = CircleId(id);

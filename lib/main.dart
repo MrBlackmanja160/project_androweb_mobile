@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
               // theme: ThemeData(
               //   textTheme: GoogleFonts.poppinsTextTheme(),
               //   primarySwatch: Colors.blue,
-              //   cardTheme: const CardTheme(
+              //   cardTheme: const CardThemeData(
               //     clipBehavior: Clip.antiAlias,
               //     elevation: 10,
               //     shadowColor: Colors.white54,
@@ -56,7 +56,7 @@ class MyApp extends StatelessWidget {
                   brightness: Brightness.dark,
                   accentColor: Colors.orange,
                 ),
-                cardTheme: const CardTheme(
+                cardTheme: const CardThemeData(
                   clipBehavior: Clip.antiAlias,
                   elevation: 10,
                   shape: RoundedRectangleBorder(
@@ -68,7 +68,7 @@ class MyApp extends StatelessWidget {
                 appBarTheme: const AppBarTheme(
                   backgroundColor: Colors.orange,
                 ),
-                tabBarTheme: const TabBarTheme(
+                tabBarTheme: const TabBarThemeData(
                   labelColor: Colors.orange,
                   unselectedLabelColor: Colors.white,
                   labelPadding: EdgeInsets.symmetric(vertical: 8),
@@ -81,14 +81,14 @@ class MyApp extends StatelessWidget {
                 ),
                 elevatedButtonTheme: ElevatedButtonThemeData(
                   style: ButtonStyle(
-                    foregroundColor: MaterialStateProperty.all(
+                    foregroundColor: WidgetStateProperty.all(
                       Colors.white,
                     ),
                   ),
                 ),
                 checkboxTheme: CheckboxThemeData(
-                  checkColor: MaterialStateProperty.all(Colors.white),
-                  fillColor: MaterialStateProperty.all(Colors.orange),
+                  checkColor: WidgetStateProperty.all(Colors.white),
+                  fillColor: WidgetStateProperty.all(Colors.orange),
                 ),
               ),
               home: const LoginNew(),

@@ -6,7 +6,7 @@ import 'package:kalbemd/blesscom/widgets/card_checkin.dart';
 import 'package:kalbemd/blesscom/widgets/menu_list.dart';
 import 'package:flutter/material.dart';
 import 'package:kalbemd/blesscom/widgets/menu_listbackdate.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class Backdate extends StatefulWidget {
   const Backdate({Key? key}) : super(key: key);
@@ -16,14 +16,8 @@ class Backdate extends StatefulWidget {
 }
 
 class _BackdateState extends State<Backdate> {
-  PackageInfo _packageInfo = PackageInfo(
-    appName: '-',
-    packageName: '-',
-    version: '-',
-    buildNumber: '-',
-  );
+  PackageInfo? _packageInfo; // nullable sekarang
   bool _loading = false;
-
   Map<dynamic, dynamic> _infoLog = {};
 
   void _getInfoLog() async {
@@ -37,10 +31,10 @@ class _BackdateState extends State<Backdate> {
     _infoLog = await Helper.getInfoLog(context);
 
     // Get version info
-    _packageInfo = await PackageInfo.fromPlatform();
-
+    final info = await PackageInfo.fromPlatform();
     if (mounted) {
       setState(() {
+        _packageInfo = info;
         _loading = false;
       });
     }
@@ -83,7 +77,7 @@ class _BackdateState extends State<Backdate> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          appName.toUpperCase() + " ",
+                          "${appName.toUpperCase()} ",
                           style: textStyleBigBold.copyWith(
                               color: Theme.of(context).primaryColor),
                         ),
@@ -135,12 +129,12 @@ class _BackdateState extends State<Backdate> {
                     onPop: _getInfoLog,
                   ),
 
-                if (!_loading)
+                if (!_loading && _packageInfo != null)
                   Center(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8),
                       child: Text(
-                        "v${_packageInfo.version}+${_packageInfo.buildNumber}",
+                        "v${_packageInfo!.version}+${_packageInfo!.buildNumber}",
                         style: textStyleSmall.copyWith(
                             color: Theme.of(context).disabledColor),
                       ),

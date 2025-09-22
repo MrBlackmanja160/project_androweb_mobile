@@ -24,7 +24,7 @@ class InputIjinExplore extends StatefulWidget {
 class _InputIjinExploreState extends State<InputIjinExplore> {
   List<Map<String, String>> _ieMaster = [];
   bool _loading = false;
-  bool _editable = false;
+  final bool _editable = false;
   bool _loadingPosting = false;
 
   void _initForm() async {
@@ -129,9 +129,9 @@ class _InputIjinExploreState extends State<InputIjinExplore> {
               _postingConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -211,9 +211,9 @@ class _InputIjinExploreState extends State<InputIjinExplore> {
               _deleteMasterConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),

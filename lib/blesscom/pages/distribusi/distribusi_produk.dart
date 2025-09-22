@@ -130,9 +130,9 @@ class _DistribusiProdukState extends State<DistribusiProduk> {
               _postingConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -283,9 +283,9 @@ class _DistribusiProdukState extends State<DistribusiProduk> {
               _deleteMasterConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),

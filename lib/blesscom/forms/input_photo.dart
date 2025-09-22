@@ -49,8 +49,7 @@ class _InputPhotoState extends State<InputPhoto> {
     for (int i = 0; i < value.length; i += length) {
       int offset = i + length;
       pieces +=
-          value.substring(i, offset >= value.length ? value.length : offset) +
-              "\n";
+          "${value.substring(i, offset >= value.length ? value.length : offset)}\n";
     }
     return pieces;
   }
@@ -72,22 +71,22 @@ class _InputPhotoState extends State<InputPhoto> {
 
     if (_photo != null) {
       _image = _photo;
-      String _addressData = "";
-      _addressData = await Helper.getPrefs("_addressData");
+      String addressData = "";
+      addressData = await Helper.getPrefs("_addressData");
       String lat = await Helper.getPrefs("lat");
       String lng = await Helper.getPrefs("lng");
       String namadepan = await Helper.getPrefs("namadepan");
       String namabelakang = await Helper.getPrefs("namabelakang");
       String now = DateFormat('dd-MM-yyyy kk:mm').format(DateTime.now());
 
-      String _addressDataSplit = splitByLength(_addressData, 30);
-      _addressDataSplit += namadepan + " " + namabelakang + "\n";
-      _addressDataSplit += lat + "," + lng + "\n";
-      _addressDataSplit += now;
+      String addressDataSplit = splitByLength(addressData, 30);
+      addressDataSplit += "$namadepan $namabelakang\n";
+      addressDataSplit += "$lat,$lng\n";
+      addressDataSplit += now;
 
-      _addressDataSplit = (!widget.gallery) ? _addressDataSplit : "";
+      addressDataSplit = (!widget.gallery) ? addressDataSplit : "";
 
-      log(_addressDataSplit);
+      log(addressDataSplit);
 
       //split address data per 80 character enter .
       // var t = await _photo.readAsBytes();
@@ -100,7 +99,7 @@ class _InputPhotoState extends State<InputPhoto> {
       imgBytes = Uint8List.fromList(t);
       watermarkedImgBytes = await ImageWatermark.addTextWatermark(
         imgBytes: imgBytes,
-        watermarkText: _addressDataSplit,
+        watermarkText: addressDataSplit,
         dstX: 10,
         dstY: 10,
         color: Colors.white,
@@ -153,6 +152,11 @@ class _InputPhotoState extends State<InputPhoto> {
         onTap: _takePhoto,
         child: Card(
           margin: EdgeInsets.zero,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            side: const BorderSide(color: Colors.white),
+            borderRadius: BorderRadius.circular(8),
+          ),
           child: widget.initialValue.isNotEmpty && _photoPath.isEmpty
               // ? Image.network(
               //     widget.initialValue,
@@ -185,11 +189,6 @@ class _InputPhotoState extends State<InputPhoto> {
                       fit: BoxFit.cover,
                       key: UniqueKey(),
                     ),
-          shadowColor: Colors.transparent,
-          shape: RoundedRectangleBorder(
-            side: const BorderSide(color: Colors.white),
-            borderRadius: BorderRadius.circular(8),
-          ),
         ),
       ),
     );

@@ -92,7 +92,7 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
   // ignore: deprecated_member_use
   List<Map<String, dynamic>> _selecteds = <Map<String, dynamic>>[];
   // ignore: unused_field
-  final String? _selectableKey = "namalengkap";
+  final String _selectableKey = "namalengkap";
   String? _sortColumn;
   bool _sortAscending = true;
   bool _isLoading = true;
@@ -109,7 +109,7 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
 
   Widget _dropContainer(data) {
     // ignore: unused_local_variable
-    List<Widget> _children = data.entries.map<Widget>((entry) {
+    List<Widget> children = data.entries.map<Widget>((entry) {
       Widget w = Row(
         children: [
           Text(entry.key.toString()),
@@ -122,7 +122,7 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
     // ignore: avoid_unnecessary_containers
     return Container(
       // height: 100,
-      child: Column(
+      child: const Column(
           // children: [
           //   Expanded(
           //       child: Container(
@@ -266,7 +266,7 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
     }
   }
 
-  _resetData({start = 0}) async {
+  Future<void> _resetData({start = 0}) async {
     setState(() => _isLoading = true);
     var expandedLen =
         _total - start < _currentPerPage ? _total - start : _currentPerPage;
@@ -278,7 +278,7 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
     });
   }
 
-  _filterData(value) {
+  void _filterData(value) {
     setState(() => _isLoading = true);
 
     try {
@@ -294,9 +294,9 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
       }
 
       _total = _sourceFiltered.length;
-      var _rangeTop = _total < _currentPerPage ? _total : _currentPerPage;
-      _expanded = List.generate(_rangeTop, (index) => false);
-      _source = _sourceFiltered.getRange(0, _rangeTop).toList();
+      var rangeTop = _total < _currentPerPage ? _total : _currentPerPage;
+      _expanded = List.generate(rangeTop, (index) => false);
+      _source = _sourceFiltered.getRange(0, rangeTop).toList();
     } catch (e) {
       Helper.showSnackBar(context, e.toString());
     }
@@ -498,11 +498,11 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
                       right: 15, left: 5, top: 5, bottom: 5),
                   height: 50,
                   child: ElevatedButton(
+                    onPressed: !_loadingAdd && _editable ? _addItem : null,
                     child: Icon(
                       FontAwesomeIcons.plus,
-                      color: Theme.of(context).textTheme.bodyText2?.color,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
-                    onPressed: !_loadingAdd && _editable ? _addItem : null,
                   ),
                 ),
               ),
@@ -520,10 +520,9 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
                         child: TextField(
                       focusNode: _focusSearch,
                       decoration: InputDecoration(
-                          hintText: 'Cari Berdasarkan ' +
-                              _searchKey
+                          hintText: 'Cari Berdasarkan ${_searchKey
                                   .replaceAll(RegExp('[\\W_]+'), ' ')
-                                  .toUpperCase(),
+                                  .toUpperCase()}',
                           prefixIcon: IconButton(
                               icon: const Icon(Icons.cancel),
                               onPressed: () {
@@ -570,10 +569,10 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
                           a["$_sortColumn"].compareTo(b["$_sortColumn"]));
                     }
                     // ignore: non_constant_identifier_names
-                    var _range_top = _currentPerPage < _sourceFiltered.length
+                    var range_top = _currentPerPage < _sourceFiltered.length
                         ? _currentPerPage
                         : _sourceFiltered.length;
-                    _source = _sourceFiltered.getRange(0, _range_top).toList();
+                    _source = _sourceFiltered.getRange(0, range_top).toList();
                     _searchKey = value;
 
                     _isLoading = false;
@@ -612,8 +611,8 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
                           value: _currentPerPage,
                           items: _perPages
                               .map((e) => DropdownMenuItem(
-                                    child: Text("$e"),
                                     value: e,
+                                    child: Text("$e"),
                                   ))
                               .toList(),
                           onChanged: (value) {
@@ -625,9 +624,7 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
                     ),
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 10),
-                    child: Text("$_currentPage - " +
-                        (_currentPage + _currentPerPage - 1).toString() +
-                        " dari $_total"),
+                    child: Text("$_currentPage - ${_currentPage + _currentPerPage - 1} dari $_total"),
                   ),
                   IconButton(
                     icon: const Icon(
@@ -637,9 +634,9 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
                     onPressed: _currentPage == 1
                         ? null
                         : () {
-                            var _nextSet = _currentPage - _currentPerPage;
+                            var nextSet = _currentPage - _currentPerPage;
                             setState(() {
-                              _currentPage = _nextSet > 1 ? _nextSet : 1;
+                              _currentPage = nextSet > 1 ? nextSet : 1;
                               _resetData(start: _currentPage - 1);
                             });
                           },
@@ -650,13 +647,13 @@ class _ReturBarangBackdateState extends State<ReturBarangBackdate> {
                     onPressed: _currentPage + _currentPerPage - 1 > _total
                         ? null
                         : () {
-                            var _nextSet = _currentPage + _currentPerPage;
+                            var nextSet = _currentPage + _currentPerPage;
 
                             setState(() {
-                              _currentPage = _nextSet < _total
-                                  ? _nextSet
+                              _currentPage = nextSet < _total
+                                  ? nextSet
                                   : _total - _currentPerPage;
-                              _resetData(start: _nextSet - 1);
+                              _resetData(start: nextSet - 1);
                             });
                           },
                     padding: const EdgeInsets.symmetric(horizontal: 10),

@@ -61,43 +61,43 @@ class _MenuListBackdateState extends State<MenuListBackdate> {
     _typeIsToko = true;
     _typeIsDistributor = true;
 
-    bool _menuPenjualan = widget.infoLog["infoLog"]["menu_penjualan"] == "Y";
-    bool _menuDistribusiProduk =
+    bool menuPenjualan = widget.infoLog["infoLog"]["menu_penjualan"] == "Y";
+    bool menuDistribusiProduk =
         widget.infoLog["infoLog"]["menu_distribusiproduk"] == "Y";
-    bool _menuFotoActivityMotoris =
+    bool menuFotoActivityMotoris =
         widget.infoLog["infoLog"]["menu_fotoactivitymotoris"] == "Y";
-    bool _menuFotoActivitySMD =
+    bool menuFotoActivitySMD =
         widget.infoLog["infoLog"]["menu_fotoactivitysmd"] == "Y";
-    bool _menuPembelian = widget.infoLog["infoLog"]["menu_pembelian"] == "Y";
-    bool _menuPengembalian =
+    bool menuPembelian = widget.infoLog["infoLog"]["menu_pembelian"] == "Y";
+    bool menuPengembalian =
         widget.infoLog["infoLog"]["menu_pengembalian"] == "Y";
-    bool _menuInputPO = widget.infoLog["infoLog"]["menu_inputpo"] == "Y";
-    bool _menuInputStok = widget.infoLog["infoLog"]["menu_inputstok"] == "Y";
-    bool _menuInputPkm = widget.infoLog["infoLog"]["menu_inputpkm"] == "Y";
-    bool _menuSetorUang = widget.infoLog["infoLog"]["menu_setoruang"] == "Y";
+    bool menuInputPO = widget.infoLog["infoLog"]["menu_inputpo"] == "Y";
+    bool menuInputStok = widget.infoLog["infoLog"]["menu_inputstok"] == "Y";
+    bool menuInputPkm = widget.infoLog["infoLog"]["menu_inputpkm"] == "Y";
+    bool menuSetorUang = widget.infoLog["infoLog"]["menu_setoruang"] == "Y";
 
-    bool _menuStokAwal = widget.infoLog["infoLog"]["menu_stokawal"] == "Y";
-    bool _menuBarangDatang =
+    bool menuStokAwal = widget.infoLog["infoLog"]["menu_stokawal"] == "Y";
+    bool menuBarangDatang =
         widget.infoLog["infoLog"]["menu_barangdatang"] == "Y";
-    bool _menuReturBarang =
+    bool menuReturBarang =
         widget.infoLog["infoLog"]["menu_returbarang"] == "Y";
-    bool _menuSaldoAkhir = widget.infoLog["infoLog"]["menu_saldoakhir"] == "Y";
-    bool _menuInputPenjualanSales =
+    bool menuSaldoAkhir = widget.infoLog["infoLog"]["menu_saldoakhir"] == "Y";
+    bool menuInputPenjualanSales =
         widget.infoLog["infoLog"]["menu_inputpenjualansales"] == "Y";
-    bool _menuUpdateHarga =
+    bool menuUpdateHarga =
         widget.infoLog["infoLog"]["menu_updateharga"] == "Y";
 
-    bool _menuInputIjin = widget.infoLog["infoLog"]["menu_inputijin"] == "Y";
+    bool menuInputIjin = widget.infoLog["infoLog"]["menu_inputijin"] == "Y";
 
-    bool _menuStokAwalBackdate =
+    bool menuStokAwalBackdate =
         widget.infoLog["infoLog"]["menu_stokawalbackdate"] == "Y";
-    bool _menuBarangDatangBackdate =
+    bool menuBarangDatangBackdate =
         widget.infoLog["infoLog"]["menu_barangdatangbackdate"] == "Y";
-    bool _menuReturBarangBackdate =
+    bool menuReturBarangBackdate =
         widget.infoLog["infoLog"]["menu_returbarangbackdate"] == "Y";
-    bool _menuSaldoAkhirBackdate =
+    bool menuSaldoAkhirBackdate =
         widget.infoLog["infoLog"]["menu_saldoakhirbackdate"] == "Y";
-    bool _menuInputPenjualanSalesBackdate =
+    bool menuInputPenjualanSalesBackdate =
         widget.infoLog["infoLog"]["menu_inputpenjualansalesbackdate"] == "Y";
 
     // Clear all menus
@@ -257,7 +257,7 @@ class _MenuListBackdateState extends State<MenuListBackdate> {
     // }
 
     //menu backdate
-    if (_menuStokAwalBackdate) {
+    if (menuStokAwalBackdate) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.firstOrder,
@@ -266,7 +266,7 @@ class _MenuListBackdateState extends State<MenuListBackdate> {
       ));
     }
 
-    if (_menuBarangDatangBackdate) {
+    if (menuBarangDatangBackdate) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.rightToBracket,
@@ -275,7 +275,7 @@ class _MenuListBackdateState extends State<MenuListBackdate> {
       ));
     }
 
-    if (_menuReturBarangBackdate) {
+    if (menuReturBarangBackdate) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.arrowRotateLeft,
@@ -284,7 +284,7 @@ class _MenuListBackdateState extends State<MenuListBackdate> {
       ));
     }
 
-    if (_menuSaldoAkhirBackdate) {
+    if (menuSaldoAkhirBackdate) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.fileInvoice,
@@ -293,7 +293,7 @@ class _MenuListBackdateState extends State<MenuListBackdate> {
       ));
     }
 
-    if (_menuInputPenjualanSalesBackdate) {
+    if (menuInputPenjualanSalesBackdate) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.cartArrowDown,

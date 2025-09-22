@@ -18,6 +18,9 @@ class ModelJenisFotoSMDItem {
   String idjenisnds;
   String jenisnds;
   String kelompoknds;
+  String? fotoRakNdb;          
+  String? idketeranganRakNdb;  
+  String? keteranganRakNdb;
 
   ModelJenisFotoSMDItem({
     this.id = "",
@@ -39,5 +42,8 @@ class ModelJenisFotoSMDItem {
     this.idjenisnds = "",
     this.kelompoknds = "",
     this.jenisnds = "",
+    this.fotoRakNdb,
+    this.idketeranganRakNdb,
+    this.keteranganRakNdb,
   });
 }

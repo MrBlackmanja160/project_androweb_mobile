@@ -86,7 +86,7 @@ class _ExploreIjinState extends State<ExploreIjin> {
         "required": "Y",
         "gallery": "Y",
         "value": widget.master != null
-            ? baseURL + "assets/images/lampiran/${widget.master["foto"]}"
+            ? "${baseURL}assets/images/lampiran/${widget.master["foto"]}"
             : "",
       },
       {
@@ -146,9 +146,9 @@ class _ExploreIjinState extends State<ExploreIjin> {
               _deleteMasterConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -217,9 +217,9 @@ class _ExploreIjinState extends State<ExploreIjin> {
               _postingConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),

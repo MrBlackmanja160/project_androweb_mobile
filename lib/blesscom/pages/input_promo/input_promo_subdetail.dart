@@ -24,7 +24,7 @@ class InputPromoSubDetail extends StatefulWidget {
 }
 
 class _InputPromoSubDetailState extends State<InputPromoSubDetail> {
-  List<ModelJenisInputPromoItem> _data = [];
+  final List<ModelJenisInputPromoItem> _data = [];
   bool _loading = false;
   bool _editable = false;
 
@@ -172,7 +172,7 @@ class _InputPromoSubDetailState extends State<InputPromoSubDetail> {
                                   child: Padding(
                                     padding: const EdgeInsets.only(left: 8),
                                     child: Text(
-                                      "Ket : " + _data[index].ket,
+                                      "Ket : ${_data[index].ket}",
                                       style: textStyleBold,
                                     ),
                                   ),

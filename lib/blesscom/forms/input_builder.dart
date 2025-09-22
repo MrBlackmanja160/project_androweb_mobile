@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 
 import 'package:kalbemd/Helper/helper.dart';
@@ -15,7 +14,7 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 
 class InputBuilder extends StatefulWidget {
-  final List<Map<String, String>> ieMaster;
+  final List<Map<String, dynamic>> ieMaster;
   final Function(dynamic)? onSubmit;
   final String submitLabel;
   final String actionUrl;
@@ -42,44 +41,80 @@ class _InputBuilderState extends State<InputBuilder> {
   final Map<String, dynamic> _values = {};
   final List<Widget> _widgets = [];
 
+  String? _validatorRequired(String? value) {
+    if (value == null || value.isEmpty) return 'Harap diisi';
+    return null;
+  }
+
+  dynamic _readForCompare(String key) {
+    var k = key;
+    var wantText = false;
+    if (k.endsWith('#text')) {
+      wantText = true;
+      k = k.substring(0, k.length - 5);
+    }
+    final v = _values[k];
+    if (v is TextEditingController) return v.text;
+    if (v is ModelDropdown) return wantText ? v.text : v.id;
+    if (v is DateTime) return DateFormat('yyyy-MM-dd').format(v);
+    return v;
+  }
+
+  bool _shouldShow(Map<String, dynamic> input) {
+    final cond = input['showif'];
+    if (cond == null || cond is! Map) return true;
+    for (final entry in cond.entries) {
+      final key = entry.key.toString();
+      final expected = entry.value;
+      final actual = _readForCompare(key);
+      final act = '${actual ?? ''}';
+      if (expected is List) {
+        final list = expected.map((e) => '${e ?? ''}').toList();
+        if (!list.contains(act)) return false;
+      } else {
+        if (act != '${expected ?? ''}') return false;
+      }
+    }
+    return true;
+  }
+
   void _buildForm() {
-    print("Build Form Woyo");
-    // Clear all
     _widgets.clear();
-    _values.clear();
 
-    // Build widgets
-    widget.ieMaster.asMap().forEach((index, input) {
-      //perulangan widget disini!!
-      // Get properties
-      String nm = input["nm"] ?? "";
-      String temp_id = input["temp_id"] ?? "";
-      String jns = input["jns"] ?? "";
-      String label = input["label"] ?? "";
-      String ajaxurl = input["ajaxurl"] ?? "";
-      String sourceKolom = input["source_kolom"] ?? "";
-      String customquery = input["customquery"] ?? "";
-      String idparent = input["idparent"] ?? "";
-      String idchild = input["idchild"] ?? "";
-      String required = input["required"] ?? "";
-      String readonly = input["readonly"] ?? "";
-      String value = input["value"] ?? "";
-      String valueText = input["valuetext"] ?? "";
-      int mininputchar = int.parse(input["mininputchar"] ?? "0");
-      String gallery = input["gallery"] ?? "T";
+    for (final input in widget.ieMaster) {
+      final String nm = (input['nm'] ?? '') as String;
+      final String jns = (input['jns'] ?? '') as String;
 
-      // Flags
-      bool isRequired = required == "Y";
-      bool isReadOnly = readonly == "Y" || !widget.enabled;
-      bool isGallery = gallery == "Y";
+      if (!_shouldShow(input)) continue;
 
-      // Create text input
+      final String label = (input['label'] ?? '') as String;
+      final String ajaxurl = (input['ajaxurl'] ?? '') as String;
+      final String sourceKolom = (input['source_kolom'] ?? '') as String;
+      final String customquery = (input['customquery'] ?? '') as String;
+      final String idparent = (input['idparent'] ?? '') as String;
+      final String idchild = (input['idchild'] ?? '') as String;
+      final String required = (input['required'] ?? '') as String;
+      final String readonly = (input['readonly'] ?? '') as String;
+      final String value = (input['value'] ?? '')?.toString() ?? '';
+      final String valueText = (input['valuetext'] ?? '')?.toString() ?? '';
+      final String tempId = (input['temp_id'] ?? '') as String;
+      final String gallery = (input['gallery'] ?? 'T') as String;
+      final int mininputchar =
+          int.tryParse('${input['mininputchar'] ?? '0'}') ?? 0;
+
+      final bool isRequired = required == 'Y';
+      final bool isReadOnly = readonly == 'Y' || !widget.enabled;
+      final bool isGallery = gallery == 'Y';
+
       switch (jns) {
-        case "hidden":
-          _values[nm] = value;
+        case 'hidden':
+          _values[nm] = _values.containsKey(nm) ? _values[nm] : value;
           break;
-        case "text":
-          _values[nm] = TextEditingController(text: value);
+
+        case 'text':
+          _values[nm] = _values[nm] is TextEditingController
+              ? _values[nm]
+              : TextEditingController(text: value);
           _widgets.add(
             InputText(
               controller: _values[nm],
@@ -90,8 +125,11 @@ class _InputBuilderState extends State<InputBuilder> {
             ),
           );
           break;
-        case "number":
-          _values[nm] = TextEditingController(text: value);
+
+        case 'number':
+          _values[nm] = _values[nm] is TextEditingController
+              ? _values[nm]
+              : TextEditingController(text: value);
           _widgets.add(
             InputText(
               controller: _values[nm],
@@ -104,76 +142,92 @@ class _InputBuilderState extends State<InputBuilder> {
             ),
           );
           break;
-        case "selcustomqueryAjax":
-          _values[nm] = ModelDropdown(id: value, text: valueText);
-          _values["${nm}dropdown"] = TextEditingController(text: valueText);
 
-          _widgets.add(InputDropdown(
-            value: _values[nm],
-            nm: nm,
-            controller: _values["${nm}dropdown"],
-            ajaxUrl: ajaxurl,
-            sourceKolom: sourceKolom,
-            customQuery: customquery,
-            label: label,
-            hint: label,
-            hintSearch: "Pencarian",
-            idparent: idparent,
-            minInputChar: mininputchar,
-            validator: isRequired ? _validatorRequired : null,
-            onChange: (val) => setState(() {
-              _values[nm] = val;
-              if (idchild != "") {
-                log("masuk sini");
-                _values["${idchild}dropdown"].text = "";
-                // _values[idchild] = ModelDropdown(id: "", text: "");
-              }
-              //simpan di session saja
-            }),
-            readOnly: isReadOnly,
-          ));
+        case 'selcustomqueryAjax':
+          _values[nm] = (_values[nm] is ModelDropdown)
+              ? _values[nm]
+              : ModelDropdown(id: value, text: valueText);
+          _values['${nm}dropdown'] =
+              _values['${nm}dropdown'] is TextEditingController
+                  ? _values['${nm}dropdown']
+                  : TextEditingController(text: valueText);
+
+          _widgets.add(
+            InputDropdown(
+              value: _values[nm],
+              nm: nm,
+              controller: _values['${nm}dropdown'],
+              ajaxUrl: ajaxurl,
+              sourceKolom: sourceKolom,
+              customQuery: customquery,
+              label: label,
+              hint: label,
+              hintSearch: 'Pencarian',
+              idparent: idparent,
+              minInputChar: mininputchar,
+              validator: isRequired ? _validatorRequired : null,
+              readOnly: isReadOnly,
+              onChange: (val) {
+                setState(() {
+                  _values[nm] = val;
+                  if (idchild.isNotEmpty) {
+                    _values[idchild] = ModelDropdown(id: '', text: '');
+                    _values['${idchild}dropdown']?.text = '';
+                  }
+                  _buildForm();
+                });
+              },
+            ),
+          );
           break;
-        case "date":
-          _values[nm] = null;
-          _widgets.add(InputDate(
-            label: label,
-            hint: label,
-            validator: isRequired ? _validatorRequired : null,
-            onChange: (val) => setState(() {
-              if (val != null) {
+
+        case 'date':
+          if (_values[nm] is! DateTime) _values[nm] = null;
+          _widgets.add(
+            InputDate(
+              label: label,
+              hint: label,
+              validator: isRequired ? _validatorRequired : null,
+              readOnly: isReadOnly,
+              onChange: (val) {
+                setState(() {
+                  if (val != null) _values[nm] = val;
+                  _buildForm();
+                });
+              },
+            ),
+          );
+          break;
+
+        case 'croppie':
+          _widgets.add(
+            InputPhoto(
+              label: label,
+              enabled: !isReadOnly,
+              initialValue: value,
+              gallery: isGallery,
+              onChange: (val) => setState(() {
                 _values[nm] = val;
-              }
-            }),
-            readOnly: isReadOnly,
-          ));
+              }),
+            ),
+          );
           break;
-        case "croppie":
-          _values[nm] = null;
-          _widgets.add(InputPhoto(
-            label: label,
-            onChange: (val) => setState(() {
-              //val adalah photo_path
-              _values[nm] = val;
-            }),
-            enabled: !isReadOnly,
-            initialValue: value,
-            gallery: isGallery,
-          ));
+
+        case 'croppiesave':
+          _widgets.add(
+            InputPhotoSave(
+              label: label,
+              enabled: !isReadOnly,
+              initialValue: value,
+              gallery: isGallery,
+              temp_id: tempId,
+              onChange: (val) => setState(() {
+                _values[nm] = val;
+              }),
+            ),
+          );
           break;
-        case "croppiesave":
-          _values[nm] = null;
-          _widgets.add(InputPhotoSave(
-            label: label,
-            onChange: (val) => setState(() {
-              //val adalah photo_path
-              _values[nm] = val;
-            }),
-            enabled: !isReadOnly,
-            initialValue: value,
-            gallery: isGallery,
-            temp_id: temp_id,
-          ));
-          break;
+
         default:
           _widgets.add(
             Padding(
@@ -183,113 +237,89 @@ class _InputBuilderState extends State<InputBuilder> {
           );
           break;
       }
-    });
-  }
-
-  String? _validatorRequired(String? value) {
-    if (value == null || value.isEmpty) {
-      return 'Harap diisi';
     }
-    return null;
   }
 
   void _submit() {
-    // Validate form
     if (_formKey.currentState!.validate()) {
-      // Send data
       sendHttpPostMultipart();
     }
   }
 
-  void sendHttpPostMultipart() async {
+  Future<void> sendHttpPostMultipart() async {
     String responseBody = "";
     try {
-      if (mounted) {
-        setState(() {
-          _loading = true;
-        });
-      }
+      if (mounted) setState(() => _loading = true);
 
-      final Uri uri = Uri.parse(widget.actionUrl);
+      final uri = Uri.parse(widget.actionUrl);
+      final request = http.MultipartRequest("POST", uri);
 
-      // Create request
-      var request = http.MultipartRequest("POST", uri);
+      for (final input in widget.ieMaster) {
+        final String nm = (input['nm'] ?? '') as String;
+        final String jns = (input['jns'] ?? '') as String;
+        final bool excludeIfHidden =
+            (input['excludeIfHidden'] == true) ||
+            ('${input['excludeIfHidden']}'.toLowerCase() == 'y');
 
-      // Add POST data
-      widget.ieMaster.asMap().forEach(
-        (index, input) async {
-          // Get properties
-          String nm = input["nm"] ?? "";
-          String jns = input["jns"] ?? "";
-          var value = _values[nm];
+        if (!_shouldShow(input) && excludeIfHidden) continue;
 
-          switch (jns) {
-            case "hidden":
-              request.fields[nm] = value;
-              break;
-            case "text":
-            case "number":
-              request.fields[nm] = value.text;
-              break;
-            case "selcustomqueryAjax":
-              request.fields[nm] = value.id;
-              break;
-            case "date":
-              request.fields[nm] = DateFormat("yyyy-MM-dd").format(value);
-              break;
-            case "croppie":
-              if (value != null && value != "") {
+        final dynamic value = _values[nm];
+
+        switch (jns) {
+          case 'hidden':
+            request.fields[nm] = '${value ?? ''}';
+            break;
+
+          case 'text':
+          case 'number':
+            request.fields[nm] =
+                (value is TextEditingController) ? value.text : '${value ?? ''}';
+            break;
+
+          case 'selcustomqueryAjax':
+            if (value is ModelDropdown) {
+              request.fields[nm] = value.id ?? '';
+            }
+            break;
+
+          case 'date':
+            if (value is DateTime) {
+              request.fields[nm] = DateFormat('yyyy-MM-dd').format(value);
+            } else {
+              request.fields[nm] = '';
+            }
+            break;
+
+          case 'croppie':
+            if (value != null && value.toString().isNotEmpty) {
+              final file = File(value.toString());
+              if (file.existsSync()) {
                 request.files.add(
-                  await http.MultipartFile.fromPath(nm, value),
+                  await http.MultipartFile.fromPath(nm, file.path),
                 );
+              } else {
+                request.fields[nm] = value.toString();
               }
-              break;
-            case "croppiesave":
-             if (value != null && value != "") {
-                request.fields[nm] = value;
-              }
-             
-              break;
-          }
-        },
-      );
+            }
+            break;
 
-      log("-------------");
-      log("Sending data to : " + widget.actionUrl);
-      log("-------------");
-      log(request.fields.toString());
-
-      if (widget.actionUrl.isEmpty) {
-        if (mounted) {
-          setState(() {
-            _loading = false;
-          });
+          case 'croppiesave':
+            if (value != null && value.toString().isNotEmpty) {
+              request.fields[nm] = value.toString();
+            }
+            break;
         }
-        return;
       }
 
-      // Response
-      var response = await http.Response.fromStream(await request.send());
+      final response = await http.Response.fromStream(await request.send());
+      if (!mounted) return;
       responseBody = response.body;
-      log("-------------");
-      log("Response from : " + widget.actionUrl);
-      log("-------------");
-      log(response.body);
-
-      // Fire on submit event
       widget.onSubmit?.call(jsonDecode(response.body));
     } on SocketException {
-      log("No internet connection");
-      if (mounted) {
-        Helper.showSnackBar(context, "No internet connection");
-      }
+      if (mounted) Helper.showSnackBar(context, "No internet connection");
     } on HttpException {
-      log("Couldn't connect to server");
-      if (mounted) {
-        Helper.showSnackBar(context, "Couldn't connect to server");
-      }
+      if (mounted) Helper.showSnackBar(context, "Couldn't connect to server");
     } on FormatException {
-      log("Bad response format");
       if (mounted) {
         Helper.showAlert(
           context: context,
@@ -299,16 +329,9 @@ class _InputBuilderState extends State<InputBuilder> {
         );
       }
     } on http.ClientException {
-      log("Client error");
-      if (mounted) {
-        Helper.showSnackBar(context, "Client error");
-      }
-    }
-
-    if (mounted) {
-      setState(() {
-        _loading = false;
-      });
+      if (mounted) Helper.showSnackBar(context, "Client error");
+    } finally {
+      if (mounted) setState(() => _loading = false);
     }
   }
 
@@ -330,9 +353,7 @@ class _InputBuilderState extends State<InputBuilder> {
       key: _formKey,
       child: Column(
         children: [
-          Column(
-            children: _widgets,
-          ),
+          Column(children: _widgets),
           SizedBox(
             width: double.infinity,
             child: ElevatedButton(

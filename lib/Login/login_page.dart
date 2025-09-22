@@ -32,7 +32,7 @@ class _LoginPageState extends State<LoginPage> {
     setState(() {
       _passwordVisible = !_passwordVisible;
       // ignore: avoid_print
-      print("Password visible : " + _passwordVisible.toString());
+      print("Password visible : $_passwordVisible");
     });
   }
 
@@ -51,7 +51,7 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  _saveLoginInfo(dynamic response) async {
+  Future<void> _saveLoginInfo(dynamic response) async {
     String success = response["Sukses"];
     String message = response["Pesan"];
 

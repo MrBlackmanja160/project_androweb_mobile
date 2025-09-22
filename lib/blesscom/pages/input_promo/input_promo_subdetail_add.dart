@@ -67,7 +67,7 @@ class _InputPromoSubdetailAddState extends State<InputPromoSubdetailAdd> {
         "label": "Foto",
         "required": "Y",
         "value": widget.item != null
-            ? baseURL + "assets/images/lampiran/${widget.item!.foto}"
+            ? "${baseURL}assets/images/lampiran/${widget.item!.foto}"
             : "",
       },
       {

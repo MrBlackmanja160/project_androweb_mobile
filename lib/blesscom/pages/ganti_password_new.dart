@@ -75,7 +75,7 @@ class _GantiPasswordNewState extends State<GantiPasswordNew> {
     }
   }
 
-  _saveLoginInfo(dynamic response) async {
+  Future<void> _saveLoginInfo(dynamic response) async {
     String success = response["Sukses"];
     String message = response["Pesan"];
 
@@ -183,6 +183,7 @@ class _GantiPasswordNewState extends State<GantiPasswordNew> {
                               width: double.infinity,
                               height: 40,
                               child: ElevatedButton(
+                                onPressed: _loading ? null : _changePassword,
                                 child: _loading
                                     ? const SizedBox(
                                         width: 20,
@@ -193,7 +194,6 @@ class _GantiPasswordNewState extends State<GantiPasswordNew> {
                                         "UBAH PASSWORD",
                                         style: textStyleBold,
                                       ),
-                                onPressed: _loading ? null : _changePassword,
                               ),
                             ),
                             const SizedBox(

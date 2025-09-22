@@ -160,7 +160,7 @@ class _InputPromoDetailState extends State<InputPromoDetail> {
         "jns": "radiodua",
         "label": "Foto 1",
         "value": widget.master["pricelist"] != null
-            ? baseURL + "assets/images/lampiran/${widget.master["pricelist"]}"
+            ? "${baseURL}assets/images/lampiran/${widget.master["pricelist"]}"
             : "",
       },
       {
@@ -168,7 +168,7 @@ class _InputPromoDetailState extends State<InputPromoDetail> {
         "jns": "radiodua",
         "label": "Foto 2",
         "value": widget.master["mailer"] != null
-            ? baseURL + "assets/images/lampiran/${widget.master["mailer"]}"
+            ? "${baseURL}assets/images/lampiran/${widget.master["mailer"]}"
             : "",
       },
 
@@ -177,7 +177,7 @@ class _InputPromoDetailState extends State<InputPromoDetail> {
         "jns": "radiodua",
         "label": "Foto 3",
         "value": widget.master["posm"] != null
-            ? baseURL + "assets/images/lampiran/${widget.master["posm"]}"
+            ? "${baseURL}assets/images/lampiran/${widget.master["posm"]}"
             : "",
       },
       {
@@ -185,7 +185,7 @@ class _InputPromoDetailState extends State<InputPromoDetail> {
         "jns": "radiodua",
         "label": "Foto 4",
         "value": widget.master["display"] != null
-            ? baseURL + "assets/images/lampiran/${widget.master["display"]}"
+            ? "${baseURL}assets/images/lampiran/${widget.master["display"]}"
             : "",
       },
 
@@ -202,7 +202,7 @@ class _InputPromoDetailState extends State<InputPromoDetail> {
         "jns": "radiodua",
         "label": "Foto 5",
         "value": widget.master["dokumentasi"] != null
-            ? baseURL + "assets/images/lampiran/${widget.master["dokumentasi"]}"
+            ? "${baseURL}assets/images/lampiran/${widget.master["dokumentasi"]}"
             : "",
       },
       // {
@@ -296,9 +296,9 @@ class _InputPromoDetailState extends State<InputPromoDetail> {
               _deleteMasterConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -367,9 +367,9 @@ class _InputPromoDetailState extends State<InputPromoDetail> {
               _postingConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),

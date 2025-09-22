@@ -266,7 +266,7 @@ class _SaldoAkhirState extends State<SaldoAkhir> {
     }
   }
 
-  _resetData({start = 0}) async {
+  Future<void> _resetData({start = 0}) async {
     setState(() => _isLoading = true);
     var expandedLen =
         _total - start < _currentPerPage ? _total - start : _currentPerPage;
@@ -278,7 +278,7 @@ class _SaldoAkhirState extends State<SaldoAkhir> {
     });
   }
 
-  _filterData(value) {
+  void _filterData(value) {
     setState(() => _isLoading = true);
 
     try {
@@ -387,7 +387,7 @@ class _SaldoAkhirState extends State<SaldoAkhir> {
               ElevatedButton(
                 onPressed: () => Navigator.of(context).pop(),
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.all(
+                  backgroundColor: WidgetStateProperty.all(
                       Theme.of(context).disabledColor),
                 ),
                 child: const Text(
@@ -545,7 +545,7 @@ class _SaldoAkhirState extends State<SaldoAkhir> {
                   child: ElevatedButton(
                     child: Icon(
                       FontAwesomeIcons.plus,
-                      color: Theme.of(context).textTheme.bodyText2?.color,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
                     onPressed: !_loadingAdd && _editable ? _addItem : null,
                   ),

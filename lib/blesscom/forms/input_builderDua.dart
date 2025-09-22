@@ -281,7 +281,7 @@ class _InputBuilderDuaState extends State<InputBuilderDua> {
       );
 
       log("-------------");
-      log("Sending data to : " + widget.actionUrl);
+      log("Sending data to : ${widget.actionUrl}");
       log("-------------");
       log(request.fields.toString());
 
@@ -298,7 +298,7 @@ class _InputBuilderDuaState extends State<InputBuilderDua> {
       var response = await http.Response.fromStream(await request.send());
       responseBody = response.body;
       log("-------------");
-      log("Response from : " + widget.actionUrl);
+      log("Response from : ${widget.actionUrl}");
       log("-------------");
       log(response.body);
 

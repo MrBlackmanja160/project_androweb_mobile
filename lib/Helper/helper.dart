@@ -109,6 +109,15 @@ class Helper {
       {bool inverted = false, double minWidth = 100}) {
     return TextButton(
         onPressed: onPressed,
+        style: ButtonStyle(
+            overlayColor: WidgetStateProperty.all(warnakedua),
+            minimumSize: WidgetStateProperty.all(Size(minWidth, 60)),
+            backgroundColor:
+                WidgetStateProperty.all(inverted ? Colors.white : warnautama),
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(360),
+              side: BorderSide(color: warnautama, width: inverted ? 2 : 0),
+            ))),
         child: Text(
           label,
           style: inverted
@@ -124,22 +133,22 @@ class Helper {
                   fontWeight: FontWeight.bold,
                   color: textColorInvert,
                 ),
-        ),
-        style: ButtonStyle(
-            overlayColor: MaterialStateProperty.all(warnakedua),
-            minimumSize: MaterialStateProperty.all(Size(minWidth, 60)),
-            backgroundColor:
-                MaterialStateProperty.all(inverted ? Colors.white : warnautama),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(360),
-              side: BorderSide(color: warnautama, width: inverted ? 2 : 0),
-            ))));
+        ));
   }
 
   static Widget checkinbutton(String label, Color color, VoidCallback onPressed,
       {bool inverted = false, double minWidth = 50}) {
     return TextButton(
         onPressed: onPressed,
+        style: ButtonStyle(
+            overlayColor: WidgetStateProperty.all(warnakedua),
+            minimumSize: WidgetStateProperty.all(Size(minWidth, 20)),
+            backgroundColor:
+                WidgetStateProperty.all(inverted ? warnakedua : warnakedua),
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(50),
+              side: BorderSide(color: color, width: inverted ? 2 : 0),
+            ))),
         child: Text(
           label,
           style: inverted
@@ -155,16 +164,7 @@ class Helper {
                   fontWeight: FontWeight.bold,
                   color: textColorInvert,
                 ),
-        ),
-        style: ButtonStyle(
-            overlayColor: MaterialStateProperty.all(warnakedua),
-            minimumSize: MaterialStateProperty.all(Size(minWidth, 20)),
-            backgroundColor:
-                MaterialStateProperty.all(inverted ? warnakedua : warnakedua),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(50),
-              side: BorderSide(color: color, width: inverted ? 2 : 0),
-            ))));
+        ));
   }
 
   static Widget detailcheckin(
@@ -247,7 +247,7 @@ class Helper {
   }
 
   static Widget menuhome(List<ModelMenu> menu) {
-    final _borderRadius = BorderRadius.circular(10);
+    final borderRadius = BorderRadius.circular(10);
 
     // ignore: sized_box_for_whitespace
     return Container(
@@ -261,10 +261,10 @@ class Helper {
                   padding: const EdgeInsets.all(8.0),
                   child: Material(
                     color: Colors.grey[200],
-                    borderRadius: _borderRadius,
+                    borderRadius: borderRadius,
                     child: InkWell(
                       splashColor: Colors.white,
-                      borderRadius: _borderRadius,
+                      borderRadius: borderRadius,
                       onTap: menuku.ontap,
                       child: Padding(
                         padding: const EdgeInsets.all(20.0),
@@ -307,7 +307,8 @@ class Helper {
     return AppBar(
       shadowColor: Colors.transparent,
       bottom: const PreferredSize(
-          child: Divider(), preferredSize: Size.fromHeight(1)),
+          preferredSize: Size.fromHeight(1),
+          child: Divider()),
       leading: leading,
       backgroundColor: Colors.white,
       iconTheme: const IconThemeData(color: Colors.black),
@@ -336,11 +337,11 @@ class Helper {
       double? borderRadius = 360,
       bool? disabled = false,
       color}) {
-    var _color = warnautama;
+    var color0 = warnautama;
     if (color != null) {
-      _color = color;
+      color0 = color;
     }
-    var _mainColor = disabled! ? colorDisabled : _color;
+    var mainColor = disabled! ? colorDisabled : color0;
 
     return TextButton(
         onPressed: disabled ? () => {} : onPressed,
@@ -349,7 +350,7 @@ class Helper {
           children: [
             Icon(
               icon,
-              color: inverted! ? _mainColor : Colors.white,
+              color: inverted! ? mainColor : Colors.white,
               size: 18,
             ),
             if (label != "")
@@ -363,14 +364,14 @@ class Helper {
           ],
         ),
         style: ButtonStyle(
-            overlayColor: MaterialStateProperty.all(
+            overlayColor: WidgetStateProperty.all(
                 !disabled ? warnakedua : colorDisabled),
-            minimumSize: MaterialStateProperty.all(Size(minWidth!, minHeight!)),
+            minimumSize: WidgetStateProperty.all(Size(minWidth!, minHeight!)),
             backgroundColor:
-                MaterialStateProperty.all(inverted ? Colors.white : _mainColor),
-            shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                WidgetStateProperty.all(inverted ? Colors.white : mainColor),
+            shape: WidgetStateProperty.all(RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(borderRadius!),
-              side: BorderSide(color: _mainColor, width: inverted ? 2 : 0),
+              side: BorderSide(color: mainColor, width: inverted ? 2 : 0),
             ))));
   }
 
@@ -387,14 +388,14 @@ class Helper {
     Object? postData,
   }) async {
     try {
-      log("Sending data to $url: \n " + postData.toString());
+      log("Sending data to $url: \n $postData");
 
       // On start
       if (onStart != null) onStart();
 
       // Request API
       http.Response response = await http.post(Uri.parse(url), body: postData);
-      log("Response from $url : \n" + response.body);
+      log("Response from $url : \n${response.body}");
       // log("Response from $url");
 
       // onFinish
@@ -422,10 +423,10 @@ class Helper {
   }) async {
     HttpPostResponse result = HttpPostResponse();
     try {
-      log("Sending data to $url: \n " + postData.toString());
+      log("Sending data to $url: \n $postData");
       // Request API
       http.Response response = await http.post(Uri.parse(url), body: postData);
-      log("Response from $url : \n" + response.body);
+      log("Response from $url : \n${response.body}");
       // log("Response from $url");
       result.responseBody = response.body;
       result.data = jsonDecode(response.body);
@@ -483,7 +484,7 @@ class Helper {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     var test = "PREFS DATA : \n";
     prefs.getKeys().forEach((element) {
-      test += element + " : " + (prefs.getString(element) ?? "") + "\n";
+      test += "$element : ${prefs.getString(element) ?? ""}\n";
     });
     log(test);
   }
@@ -496,7 +497,7 @@ class Helper {
   /// WARNING : make sure the widget is mounted before calling [showSnackBar]
   static void showSnackBar(BuildContext context, String message) {
     final snackBar = SnackBar(
-      backgroundColor: Theme.of(context).errorColor,
+      backgroundColor: Theme.of(context).colorScheme.error,
       content: Padding(
         padding: const EdgeInsets.all(16),
         child: Text(message),
@@ -715,7 +716,7 @@ class HttpPostResponse {
     String out = "";
     out += "success : $success\n";
     out += "error : $error\n";
-    out += "data : " + data.toString() + "\n";
+    out += "data : $data\n";
     out += "responseBody : $responseBody\n";
     return out;
   }

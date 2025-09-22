@@ -266,7 +266,7 @@ class _SaldoAkhirBackdateState extends State<SaldoAkhirBackdate> {
     }
   }
 
-  _resetData({start = 0}) async {
+  Future<void> _resetData({start = 0}) async {
     setState(() => _isLoading = true);
     var expandedLen =
         _total - start < _currentPerPage ? _total - start : _currentPerPage;
@@ -278,7 +278,7 @@ class _SaldoAkhirBackdateState extends State<SaldoAkhirBackdate> {
     });
   }
 
-  _filterData(value) {
+  void _filterData(value) {
     setState(() => _isLoading = true);
 
     try {
@@ -502,7 +502,7 @@ class _SaldoAkhirBackdateState extends State<SaldoAkhirBackdate> {
                     onPressed: !_loadingAdd && _editable ? _addItem : null,
                     child: Icon(
                       FontAwesomeIcons.plus,
-                      color: Theme.of(context).textTheme.bodyText2?.color,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
                   ),
                 ),

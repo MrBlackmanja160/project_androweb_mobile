@@ -169,8 +169,8 @@ class _ProfilPageState extends State<ProfilPage> {
                         child: SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            child: const Text("Log Out"),
                             onPressed: _logout,
+                            child: const Text("Log Out"),
                           ),
                         ),
                       ),

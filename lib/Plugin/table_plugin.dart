@@ -70,10 +70,6 @@ class _OkeTableState extends State<OkeTable> {
               if (widget.onSelectAll != null) widget.onSelectAll!(value!);
             }),
         PopupMenuButton(
-            child: Container(
-              padding: const EdgeInsets.all(15),
-              child: const Text("SORT BY"),
-            ),
             tooltip: "SORT BY",
             initialValue: widget.sortColumn,
             itemBuilder: (_) => widget.headers!
@@ -81,6 +77,7 @@ class _OkeTableState extends State<OkeTable> {
                     (header) => header.show == true && header.sortable == true)
                 .toList()
                 .map((header) => PopupMenuItem(
+                      value: header.value,
                       child: Wrap(
                         crossAxisAlignment: WrapCrossAlignment.center,
                         children: [
@@ -95,12 +92,15 @@ class _OkeTableState extends State<OkeTable> {
                                 : const Icon(Icons.arrow_upward, size: 15)
                         ],
                       ),
-                      value: header.value,
                     ))
                 .toList(),
             onSelected: (value) {
               if (widget.onSort != null) widget.onSort!(value);
-            })
+            },
+            child: Container(
+              padding: const EdgeInsets.all(15),
+              child: const Text("SORT BY"),
+            ))
       ],
     );
   }
@@ -165,7 +165,7 @@ class _OkeTableState extends State<OkeTable> {
                         ),
                       ),
                     )
-                    .toList()
+                    
             ],
           ),
         ),
@@ -240,7 +240,7 @@ class _OkeTableState extends State<OkeTable> {
                             ),
                     )),
               )
-              .toList()
+              
         ],
       ),
     );
@@ -308,7 +308,7 @@ class _OkeTableState extends State<OkeTable> {
                                     ),
                         ),
                       )
-                      .toList()
+                      
                 ],
               ),
             ),

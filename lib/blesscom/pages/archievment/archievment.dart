@@ -88,7 +88,7 @@ class _ArchievmentState extends State<Archievment> {
   // ignore: deprecated_member_use
   List<Map<String, dynamic>> _selecteds = <Map<String, dynamic>>[];
   // ignore: unused_field
-  final String? _selectableKey = "nama";
+  final String _selectableKey = "nama";
   String? _sortColumn;
   bool _sortAscending = true;
   bool _isLoading = false;
@@ -99,7 +99,7 @@ class _ArchievmentState extends State<Archievment> {
   final TextEditingController _contgl = TextEditingController();
   // ModelDropdown _selectedBarang = ModelDropdown();
   DateTime _selectedDate = DateTime.now();
-  Map<String, dynamic> _infoBarang = {};
+  final Map<String, dynamic> _infoBarang = {};
 
   // double _hargaPerPcs = 0;
   // double _qtySaldoAwal = 0;
@@ -116,7 +116,7 @@ class _ArchievmentState extends State<Archievment> {
 
   Widget _dropContainer(data) {
     // ignore: unused_local_variable
-    List<Widget> _children = data.entries.map<Widget>((entry) {
+    List<Widget> children = data.entries.map<Widget>((entry) {
       Widget w = Row(
         children: [
           Text(entry.key.toString()),
@@ -274,7 +274,7 @@ class _ArchievmentState extends State<Archievment> {
     }
   }
 
-  _resetData({start = 0}) async {
+  Future<void> _resetData({start = 0}) async {
     setState(() => _isLoading = true);
     var expandedLen =
         _total - start < _currentPerPage ? _total - start : _currentPerPage;
@@ -596,10 +596,10 @@ class _ArchievmentState extends State<Archievment> {
                           a["$_sortColumn"].compareTo(b["$_sortColumn"]));
                     }
                     // ignore: non_constant_identifier_names
-                    var _range_top = _currentPerPage < _sourceFiltered.length
+                    var range_top = _currentPerPage < _sourceFiltered.length
                         ? _currentPerPage
                         : _sourceFiltered.length;
-                    _source = _sourceFiltered.getRange(0, _range_top).toList();
+                    _source = _sourceFiltered.getRange(0, range_top).toList();
                     _searchKey = value;
 
                     _isLoading = false;
@@ -662,9 +662,9 @@ class _ArchievmentState extends State<Archievment> {
                     onPressed: _currentPage == 1
                         ? null
                         : () {
-                            var _nextSet = _currentPage - _currentPerPage;
+                            var nextSet = _currentPage - _currentPerPage;
                             setState(() {
-                              _currentPage = _nextSet > 1 ? _nextSet : 1;
+                              _currentPage = nextSet > 1 ? nextSet : 1;
                               _resetData(start: _currentPage - 1);
                             });
                           },
@@ -675,13 +675,13 @@ class _ArchievmentState extends State<Archievment> {
                     onPressed: _currentPage + _currentPerPage - 1 > _total
                         ? null
                         : () {
-                            var _nextSet = _currentPage + _currentPerPage;
+                            var nextSet = _currentPage + _currentPerPage;
 
                             setState(() {
-                              _currentPage = _nextSet < _total
-                                  ? _nextSet
+                              _currentPage = nextSet < _total
+                                  ? nextSet
                                   : _total - _currentPerPage;
-                              _resetData(start: _nextSet - 1);
+                              _resetData(start: nextSet - 1);
                             });
                           },
                     padding: const EdgeInsets.symmetric(horizontal: 10),

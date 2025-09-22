@@ -8,7 +8,7 @@ import 'package:kalbemd/blesscom/widgets/circle_shape.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginNew extends StatefulWidget {
@@ -75,7 +75,7 @@ class _LoginNewState extends State<LoginNew> {
     setState(() {
       _passwordVisible = !_passwordVisible;
       // ignore: avoid_print
-      print("Password visible : " + _passwordVisible.toString());
+      print("Password visible : $_passwordVisible");
     });
   }
 
@@ -124,7 +124,7 @@ class _LoginNewState extends State<LoginNew> {
     }
   }
 
-  _saveLoginInfo(dynamic response) async {
+  Future<void> _saveLoginInfo(dynamic response) async {
     String success = response["Sukses"];
     String message = response["Pesan"];
 
@@ -330,10 +330,10 @@ class _LoginNewState extends State<LoginNew> {
                         text: TextSpan(
                           children: [
                             TextSpan(
-                              text: appName + " ",
+                              text: "$appName ",
                               style: Theme.of(context)
                                   .textTheme
-                                  .bodyText2
+                                  .bodyMedium
                                   ?.copyWith(
                                     color: Theme.of(context).primaryColor,
                                     fontWeight: FontWeight.bold,
@@ -341,7 +341,7 @@ class _LoginNewState extends State<LoginNew> {
                             ),
                             TextSpan(
                               text: appNameSub,
-                              style: Theme.of(context).textTheme.bodyText2,
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ],
                         ),
@@ -394,6 +394,7 @@ class _LoginNewState extends State<LoginNew> {
                                   width: double.infinity,
                                   height: 40,
                                   child: ElevatedButton(
+                                    onPressed: _loading ? null : _login,
                                     child: _loading
                                         ? const SizedBox(
                                             width: 20,
@@ -404,7 +405,6 @@ class _LoginNewState extends State<LoginNew> {
                                             "MASUK",
                                             style: textStyleBold,
                                           ),
-                                    onPressed: _loading ? null : _login,
                                   ),
                                 ),
                                 //  SizedBox(

@@ -174,13 +174,10 @@ class _InputDropdownModalState extends State<InputDropdownModal> {
                                   widget.parent.value.id = _item.id;
                                   widget.parent.value.text = _item.text;
                                   // widget.parent.controller.text = _item.text;
-                                  widget.parent?.controller?.text = _item.text ?? '';
+                                  widget.parent.controller?.text = _item.text ?? '';
                                   if (widget.parent.onChange != null) {
                                     widget.parent.onChange!(_item);
-                                    log("set session " +
-                                        widget.parent.nm.toString() +
-                                        ", nilainya " +
-                                        _item.id.toString());
+                                    log("set session ${widget.parent.nm}, nilainya ${_item.id}");
                                     await prefs.setString(
                                       widget.parent.nm,
                                       _item.id,
@@ -279,7 +276,7 @@ class Debouncer {
 
   Debouncer({this.milliseconds = 500});
 
-  run(VoidCallback action) {
+  void run(VoidCallback action) {
     _timer?.cancel();
     _timer = Timer(Duration(milliseconds: milliseconds), action);
   }

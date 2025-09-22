@@ -1,6 +1,6 @@
 import 'package:kalbemd/Helper/global.dart';
 import 'package:kalbemd/Helper/helper.dart';
-import 'package:kalbemd/blesscom/forms/input_builder.dart';
+import 'package:kalbemd/blesscom/forms/input_builder_smd.dart';
 import 'package:kalbemd/blesscom/pages/foto_smd/model_foto_smd_item.dart';
 import 'package:kalbemd/blesscom/pages/foto_smd/model_jenis_foto_smd.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +14,8 @@ class FotoSMDSubdetailAdd extends StatefulWidget {
   final String queryKeterangan;
   final String queryKelompokNds;
   final String queryJenisNds;
+  final String queryFotoRakNdb;
+  final String queryKeteranganRakNdb;
 
   const FotoSMDSubdetailAdd({
     required this.masterSub,
@@ -23,6 +25,8 @@ class FotoSMDSubdetailAdd extends StatefulWidget {
     required this.queryKeterangan,
     required this.queryKelompokNds,
     required this.queryJenisNds,
+    required this.queryFotoRakNdb,
+    required this.queryKeteranganRakNdb,
     this.item,
     Key? key,
   }) : super(key: key);
@@ -32,15 +36,17 @@ class FotoSMDSubdetailAdd extends StatefulWidget {
 }
 
 class _FotoSMDSubdetailAddState extends State<FotoSMDSubdetailAdd> {
-  List<Map<String, String>> _ieMaster = [];
+  List<Map<String, dynamic>> _ieMaster = [];
   bool _loading = false;
 
-  void _initForm() async {
-    if (mounted) {
-      setState(() {
-        _loading = true;
-      });
-    }
+  @override
+  void initState() {
+    super.initState();
+    _initForm();
+  }
+
+  Future<void> _initForm() async {
+    if (mounted) setState(() => _loading = true);
 
     _ieMaster = [
       {
@@ -78,12 +84,12 @@ class _FotoSMDSubdetailAddState extends State<FotoSMDSubdetailAdd> {
         "jns": "croppiesave",
         "label": "Foto",
         "required": "Y",
-        "temp_id" : widget.masterSub.tempid ?? "",
-        "value": widget.item != null
-            ? baseURL + "assets/images/lampiran/${widget.item!.foto}"
+        "temp_id": widget.masterSub.tempid ?? "",
+        "value": (widget.item?.foto?.isNotEmpty ?? false)
+            ? "$baseURL/assets/images/lampiran/${widget.item!.foto}"
             : "",
       },
-       {
+      {
         "nm": "idlokasi",
         "jns": "selcustomqueryAjax",
         "label": "Lokasi Display",
@@ -91,11 +97,10 @@ class _FotoSMDSubdetailAddState extends State<FotoSMDSubdetailAdd> {
         "required": "Y",
         "source_kolom": "a.nama",
         "customquery": widget.queryLokasiDisplay,
-        "value": widget.item != null ? widget.item!.idlokasi : "",
-        "valuetext": widget.item != null ? widget.item!.lokasidisplay : "",
+        "value": widget.item?.idlokasi ?? "",
+        "valuetext": widget.item?.lokasidisplay ?? "",
       },
-
-     {
+      {
         "nm": "idkelompoknds",
         "jns": "selcustomqueryAjax",
         "label": "Jenis NDS",
@@ -103,24 +108,59 @@ class _FotoSMDSubdetailAddState extends State<FotoSMDSubdetailAdd> {
         "required": "Y",
         "source_kolom": "a.nama",
         "customquery": widget.queryKelompokNds,
-        "value": widget.item != null ? widget.item!.idkelompoknds : "",
-        "valuetext": widget.item != null ? widget.item!.kelompoknds : "",
-        "idchild" : "idjenisnds"
+        "value": widget.item?.idkelompoknds ?? "",
+        "valuetext": widget.item?.kelompoknds ?? "",
+        "idchild": "idjenisnds"
       },
-
       {
         "nm": "idjenisnds",
-        "idparent" : "idkelompoknds",
+        "idparent": "idkelompoknds",
         "jns": "selcustomqueryAjax",
         "label": "Rak",
         "ajaxurl": urlGetSelectAjax,
         "required": "Y",
         "source_kolom": "a.nama",
         "customquery": widget.queryJenisNds,
-        "value": widget.item != null ? widget.item!.idjenisnds : "",
-        "valuetext": widget.item != null ? widget.item!.jenisnds : "",
+        "value": widget.item?.idjenisnds ?? "",
+        "valuetext": widget.item?.jenisnds ?? "",
+        "onChange": (val) {
+          setState(() {
+            _initForm();
+          });
+        },
       },
-
+      {
+        "nm": "foto_rak_ndb",
+        "jns": "croppiesave",
+        "label": "Foto Rak NDB",
+        "required": "Y", 
+        "temp_id": widget.masterSub.tempid ?? "",
+        "customquery": widget.queryFotoRakNdb,
+        "value": (widget.item?.fotoRakNdb?.isNotEmpty ?? false)
+            ? "$baseURL/assets/images/lampiran/${widget.item!.fotoRakNdb!}"
+            : "",
+        "showif": {
+          "idkelompoknds#text": "Rak NDB",
+          "idjenisnds#text": "Ada Rak NDB"
+        },
+        "excludeIfHidden": true,
+      },
+      {
+        "nm": "keterangan_rak_ndb",
+        "jns": "text",
+        "label": "Keterangan Rak NDB",
+        "required": "Y", 
+        "customquery": widget.queryKeteranganRakNdb,
+        "value": (widget.item?.keteranganRakNdb?.isNotEmpty ?? false) &&
+                widget.item!.keteranganRakNdb!.trim() != "-"
+            ? widget.item!.keteranganRakNdb!.trim()
+            : "",
+        "showif": {
+          "idkelompoknds#text": "Rak NDB",
+          "idjenisnds#text": "Ada Rak NDB"
+        },
+        "excludeIfHidden": true,
+      },
       {
         "nm": "idbrand",
         "jns": "selcustomqueryAjax",
@@ -129,109 +169,74 @@ class _FotoSMDSubdetailAddState extends State<FotoSMDSubdetailAdd> {
         "required": "Y",
         "source_kolom": "a.nama",
         "customquery": widget.queryBrandProduk,
-        "value": widget.item != null ? widget.item!.idbrand : "",
-        "valuetext": widget.item != null ? widget.item!.brand : "",
-        "idchild" : "idproduk"
+        "value": widget.item?.idbrand ?? "",
+        "valuetext": widget.item?.brand ?? "",
+        "idchild": "idproduk"
       },
-
-     {
+      {
         "nm": "idproduk",
-        "idparent" : "idbrand",
+        "idparent": "idbrand",
         "jns": "selcustomqueryAjax",
         "label": "SKU",
         "ajaxurl": urlGetSelectAjax,
         "required": "Y",
         "source_kolom": "a.nama",
         "customquery": widget.queryProduk,
-        "value": widget.item != null ? widget.item!.idproduk : "",
-        "valuetext": widget.item != null ? widget.item!.produk : "",
+        "value": widget.item?.idproduk ?? "",
+        "valuetext": widget.item?.produk ?? "",
       },
-       {
+      {
         "nm": "qty",
         "jns": "number",
         "label": "Stok",
-         "required": "Y",
-         "value": widget.item != null ?  widget.item!.qty : "",
+        "required": "Y",
+        "value": widget.item?.qty ?? "",
       },
-
       {
         "nm": "idketerangan",
         "jns": "selcustomqueryAjax",
         "label": "Keterangan",
         "ajaxurl": urlGetSelectAjax,
         "required": "T",
-         "source_kolom": "a.nama",
+        "source_kolom": "a.nama",
         "customquery": widget.queryKeterangan,
-        "value": widget.item != null ? widget.item!.idketerangan : "",
-        "valuetext": widget.item != null ? widget.item!.keterangan : "",
+        "value": widget.item?.idketerangan ?? "",
+        "valuetext": widget.item?.keterangan ?? "",
       },
-
-
     ];
 
-    print(_ieMaster);
-
-    if (mounted) {
-      setState(() {
-        _loading = false;
-      });
-    }
+    if (mounted) setState(() => _loading = false);
   }
 
   void _onSubmit(dynamic response) {
-    bool sukses = response["Sukses"] == "Y";
-    String pesan = response["Pesan"];
+    bool sukses = response["Sukses"]?.toString() == "Y";
+    String pesan = response["Pesan"]?.toString() ?? "Terjadi kesalahan";
 
-    if (sukses) {
-      if (mounted) {
-        Helper.showAlert(
-          context: context,
-          message: pesan,
-          type: AlertType.success,
-          onClose: () => Navigator.of(context).pop(),
-        );
-      }
-    } else {
-      if (mounted) {
-        Helper.showAlert(
-          context: context,
-          message: pesan,
-          type: AlertType.error,
-        );
-      }
+    if (mounted) {
+      Helper.showAlert(
+        context: context,
+        message: pesan,
+        type: sukses ? AlertType.success : AlertType.error,
+        onClose: sukses ? () => Navigator.of(context).pop() : null,
+      );
     }
-  }
-
-  // ------------------
-  // BUILD
-  // ------------------
-
-  @override
-  void initState() {
-    super.initState();
-    _initForm();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text("Tambah Activity"),
-      ),
-      resizeToAvoidBottomInset: true, // Tambahkan ini untuk menghindari overflow saat keyboard muncul  
+      appBar: AppBar(title: const Text("Tambah Activity")),
       body: _loading
           ? const LinearProgressIndicator()
           : SingleChildScrollView(
-            child: Padding(
-                padding: const EdgeInsets.all(16),
-                child: InputBuilder(
-                  ieMaster: _ieMaster,
-                  submitLabel: "Simpan",
-                  actionUrl: urlFotoActivitySMDDetailSubAddV2,
-                  onSubmit: _onSubmit,
-                ),
+              padding: const EdgeInsets.all(16),
+              child: InputBuilderSMD(
+                ieMaster: _ieMaster,
+                submitLabel: "Simpan",
+                actionUrl: urlFotoActivitySMDDetailSubAddV2,
+                onSubmit: _onSubmit,
               ),
-          ),
+            ),
     );
   }
 }

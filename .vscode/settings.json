@@ -1,0 +1,6 @@
+{
+    "java.configuration.updateBuildConfiguration": "automatic",
+
+    // Tambahan Codex khusus untuk workspace ini
+    "codex.apiBaseUrl": "http://localhost:3000"
+}

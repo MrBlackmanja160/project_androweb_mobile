@@ -2,7 +2,7 @@ const String appName = "BTrack";
 const String appNameSub = "Kalbe MD";
 
 // const String baseURL = "https://kalbe-md.blesscom1.com/";
-const String baseURL = "http://192.168.2.61/kalbe-md/";
+const String baseURL = "http://192.168.2.33/kalbe-md-nds-web/";
 
 // const String urlToko = baseURL + "Parse_android/getToko";
 const String tokenAplikasi = "2325427f-ba13-11eb-a15e-3c970e7a4464";
@@ -110,7 +110,7 @@ const String urlFotoActivityMtrAdd =
     "${baseURL}Parse_android/saveMasterFotoActivity";
 const String urlFotoActivityMtrDelete =
     "${baseURL}Parse_android/hapusDataFotoActivity";
-const String urlFotoActivityMtrDetail = "$baseURL";
+const String urlFotoActivityMtrDetail = baseURL;
 
 // Foto Activity SMD
 const String urlMasterJenisFotoSMD =
@@ -121,7 +121,7 @@ const String urlFotoActivitySMDAdd =
     "${baseURL}Parse_android/saveMasterFotoActivitySMD";
 const String urlFotoActivitySMDDelete =
     "${baseURL}Parse_android/hapusDataFotoActivitySMD";
-const String urlFotoActivitySMDDetail = "$baseURL";
+const String urlFotoActivitySMDDetail = baseURL;
 const String urlFotoActivitySMDDetailSub =
     "${baseURL}Parse_android/getDetailSubFotoActivitySMD";
 const String urlFotoActivitySMDDetailSubAdd =
@@ -363,7 +363,7 @@ const String urlInputPromoAdd =
    "${baseURL}Parse_android/saveMasterInputPromo";
 const String urlInputPromoDelete =
     "${baseURL}Parse_android/hapusDataInputPromo";
-const String urlInputPromoDetail = "${baseURL}";
+const String urlInputPromoDetail = baseURL;
 const String urlInputPromoDetailSub =
     "${baseURL}Parse_android/getDetailSubInputPromo";
 const String urlInputPromoDetailSubAdd =

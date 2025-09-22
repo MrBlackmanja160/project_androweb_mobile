@@ -64,61 +64,61 @@ class _MenuListState extends State<MenuList> {
     _typeIsToko = true;
     _typeIsDistributor = true;
 
-    bool _menuPenjualan = widget.infoLog["infoLog"]["menu_penjualan"] == "Y";
-    bool _menuDistribusiProduk =
+    bool menuPenjualan = widget.infoLog["infoLog"]["menu_penjualan"] == "Y";
+    bool menuDistribusiProduk =
         widget.infoLog["infoLog"]["menu_distribusiproduk"] == "Y";
-    bool _menuFotoActivityMotoris =
+    bool menuFotoActivityMotoris =
         widget.infoLog["infoLog"]["menu_fotoactivitymotoris"] == "Y";
-    bool _menuFotoActivitySMD =
+    bool menuFotoActivitySMD =
         widget.infoLog["infoLog"]["menu_fotoactivitysmd"] == "Y";
-    bool _menuPembelian = widget.infoLog["infoLog"]["menu_pembelian"] == "Y";
-    bool _menuPengembalian =
+    bool menuPembelian = widget.infoLog["infoLog"]["menu_pembelian"] == "Y";
+    bool menuPengembalian =
         widget.infoLog["infoLog"]["menu_pengembalian"] == "Y";
-    bool _menuInputPO = widget.infoLog["infoLog"]["menu_inputpo"] == "Y";
-    bool _menuInputStok = widget.infoLog["infoLog"]["menu_inputstok"] == "Y";
-    bool _menuInputPkm = widget.infoLog["infoLog"]["menu_inputpkm"] == "Y";
-    bool _menuSetorUang = widget.infoLog["infoLog"]["menu_setoruang"] == "Y";
+    bool menuInputPO = widget.infoLog["infoLog"]["menu_inputpo"] == "Y";
+    bool menuInputStok = widget.infoLog["infoLog"]["menu_inputstok"] == "Y";
+    bool menuInputPkm = widget.infoLog["infoLog"]["menu_inputpkm"] == "Y";
+    bool menuSetorUang = widget.infoLog["infoLog"]["menu_setoruang"] == "Y";
 
-    bool _menuStokAwal = widget.infoLog["infoLog"]["menu_stokawal"] == "Y";
-    bool _menuBarangDatang =
+    bool menuStokAwal = widget.infoLog["infoLog"]["menu_stokawal"] == "Y";
+    bool menuBarangDatang =
         widget.infoLog["infoLog"]["menu_barangdatang"] == "Y";
-    bool _menuReturBarang =
+    bool menuReturBarang =
         widget.infoLog["infoLog"]["menu_returbarang"] == "Y";
-    bool _menuSaldoAkhir = widget.infoLog["infoLog"]["menu_saldoakhir"] == "Y";
-    bool _menuInputPenjualanSales =
+    bool menuSaldoAkhir = widget.infoLog["infoLog"]["menu_saldoakhir"] == "Y";
+    bool menuInputPenjualanSales =
         widget.infoLog["infoLog"]["menu_inputpenjualansales"] == "Y";
-    bool _menuUpdateHarga =
+    bool menuUpdateHarga =
         widget.infoLog["infoLog"]["menu_updateharga"] == "Y";
 
-    bool _menuInputIjin = widget.infoLog["infoLog"]["menu_inputijin"] == "Y";
+    bool menuInputIjin = widget.infoLog["infoLog"]["menu_inputijin"] == "Y";
 
-    bool _menuStokAwalBackdate =
+    bool menuStokAwalBackdate =
         widget.infoLog["infoLog"]["menu_stokawalbackdate"] == "Y";
-    bool _menuBarangDatangBackdate =
+    bool menuBarangDatangBackdate =
         widget.infoLog["infoLog"]["menu_barangdatangbackdate"] == "Y";
-    bool _menuReturBarangBackdate =
+    bool menuReturBarangBackdate =
         widget.infoLog["infoLog"]["menu_returbarangbackdate"] == "Y";
-    bool _menuSaldoAkhirBackdate =
+    bool menuSaldoAkhirBackdate =
         widget.infoLog["infoLog"]["menu_saldoakhirbackdate"] == "Y";
-    bool _menuInputPenjualanSalesBackdate =
+    bool menuInputPenjualanSalesBackdate =
         widget.infoLog["infoLog"]["menu_inputpenjualansalesbackdate"] == "Y";
-    bool _menuInputHargaKalbe =
+    bool menuInputHargaKalbe =
         widget.infoLog["infoLog"]["menu_inputhargakalbe"] == "Y";
-    bool _menuInputHargaKompetitor =
+    bool menuInputHargaKompetitor =
         widget.infoLog["infoLog"]["menu_inputhargakompetitor"] == "Y";
 
-    bool _menuPenjualanHarian =
+    bool menuPenjualanHarian =
         widget.infoLog["infoLog"]["menu_penjualanharian"] == "Y";
-    bool _menuOos = widget.infoLog["infoLog"]["menu_oos"] == "Y";
-    bool _menuProdukExpired =
+    bool menuOos = widget.infoLog["infoLog"]["menu_oos"] == "Y";
+    bool menuProdukExpired =
         widget.infoLog["infoLog"]["menu_produkexpired"] == "Y";
-     bool _menuInputPromo = widget.infoLog["infoLog"]["menu_inputpromo"] == "Y";
+     bool menuInputPromo = widget.infoLog["infoLog"]["menu_inputpromo"] == "Y";
 
     // Clear all menus
     _menuItems.clear();
 
     // Build menus
-    if (_menuPembelian) {
+    if (menuPembelian) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.cartPlus,
@@ -127,7 +127,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuPenjualan) {
+    if (menuPenjualan) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.cashRegister,
@@ -136,7 +136,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuDistribusiProduk) {
+    if (menuDistribusiProduk) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.expandArrowsAlt,
@@ -144,7 +144,7 @@ class _MenuListState extends State<MenuList> {
         onTap: _checkedIn && _typeIsToko ? _goToDistribusi : null,
       ));
     }
-    if (_menuFotoActivityMotoris) {
+    if (menuFotoActivityMotoris) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.cameraRetro,
@@ -153,7 +153,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuPengembalian) {
+    if (menuPengembalian) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.arrowCircleLeft,
@@ -162,7 +162,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuInputPO) {
+    if (menuInputPO) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.paperclip,
@@ -171,7 +171,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuSetorUang) {
+    if (menuSetorUang) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.moneyBillWave,
@@ -180,7 +180,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuInputStok) {
+    if (menuInputStok) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.moneyBillWave,
@@ -189,7 +189,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuInputPkm) {
+    if (menuInputPkm) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.moneyBillWave,
@@ -198,7 +198,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuStokAwal) {
+    if (menuStokAwal) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.firstOrder,
@@ -207,7 +207,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuBarangDatang) {
+    if (menuBarangDatang) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.rightToBracket,
@@ -216,7 +216,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuReturBarang) {
+    if (menuReturBarang) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.arrowRotateLeft,
@@ -225,7 +225,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuSaldoAkhir) {
+    if (menuSaldoAkhir) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.fileInvoice,
@@ -234,7 +234,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuInputPenjualanSales) {
+    if (menuInputPenjualanSales) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.cartArrowDown,
@@ -243,7 +243,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuUpdateHarga) {
+    if (menuUpdateHarga) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.moneyBillTrendUp,
@@ -252,7 +252,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuFotoActivitySMD) {
+    if (menuFotoActivitySMD) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.images,
@@ -261,7 +261,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-     if (_menuInputPromo) {
+     if (menuInputPromo) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.bullhorn,
@@ -270,7 +270,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuInputIjin) {
+    if (menuInputIjin) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.houseMedical,
@@ -279,7 +279,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuInputHargaKalbe) {
+    if (menuInputHargaKalbe) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.moneyBillTrendUp,
@@ -288,7 +288,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuInputHargaKompetitor) {
+    if (menuInputHargaKompetitor) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.moneyBillTrendUp,
@@ -298,7 +298,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-    if (_menuPenjualanHarian) {
+    if (menuPenjualanHarian) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.cartFlatbed,
@@ -306,7 +306,7 @@ class _MenuListState extends State<MenuList> {
         onTap: _checkedIn && _typeIsDistributor ? _goPenjualanHarian : null,
       ));
     }
-    if (_menuOos) {
+    if (menuOos) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.arrowTrendDown,
@@ -314,7 +314,7 @@ class _MenuListState extends State<MenuList> {
         onTap: _checkedIn && _typeIsDistributor ? _goOos : null,
       ));
     }
-    if (_menuProdukExpired) {
+    if (menuProdukExpired) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.schoolCircleCheck,

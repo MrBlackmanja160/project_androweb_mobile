@@ -109,7 +109,7 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
   // ignore: deprecated_member_use
   List<Map<String, dynamic>> _selecteds = <Map<String, dynamic>>[];
   // ignore: unused_field
-  final String? _selectableKey = "namalengkap";
+  final String _selectableKey = "namalengkap";
   String? _sortColumn;
   bool _sortAscending = true;
   bool _isLoading = true;
@@ -125,7 +125,7 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
 
   Widget _dropContainer(data) {
     // ignore: unused_local_variable
-    List<Widget> _children = data.entries.map<Widget>((entry) {
+    List<Widget> children = data.entries.map<Widget>((entry) {
       Widget w = Row(
         children: [
           Text(entry.key.toString()),
@@ -252,9 +252,7 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
   void _mockPullData() async {
     if (widget.master["foto"] != null) {
       if (widget.master["foto"].toString().isNotEmpty) {
-        _initialPhoto = baseURL +
-            "assets/images/lampiran/" +
-            widget.master["foto"].toString();
+        _initialPhoto = "${baseURL}assets/images/lampiran/${widget.master["foto"]}";
       }
     }
 
@@ -291,7 +289,7 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
     }
   }
 
-  _resetData({start = 0}) async {
+  Future<void> _resetData({start = 0}) async {
     setState(() => _isLoading = true);
     var expandedLen =
         _total - start < _currentPerPage ? _total - start : _currentPerPage;
@@ -303,7 +301,7 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
     });
   }
 
-  _filterData(value) {
+  void _filterData(value) {
     setState(() => _isLoading = true);
 
     try {
@@ -319,9 +317,9 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
       }
 
       _total = _sourceFiltered.length;
-      var _rangeTop = _total < _currentPerPage ? _total : _currentPerPage;
-      _expanded = List.generate(_rangeTop, (index) => false);
-      _source = _sourceFiltered.getRange(0, _rangeTop).toList();
+      var rangeTop = _total < _currentPerPage ? _total : _currentPerPage;
+      _expanded = List.generate(rangeTop, (index) => false);
+      _source = _sourceFiltered.getRange(0, rangeTop).toList();
     } catch (e) {
       Helper.showSnackBar(context, e.toString());
     }
@@ -354,9 +352,9 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
               _postingConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -438,9 +436,9 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
               _deleteMasterConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -523,18 +521,18 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
         await http.MultipartFile.fromPath("foto", value),
       );
 
-      log("Sending data to $uri: \n " + request.fields.toString());
+      log("Sending data to $uri: \n ${request.fields}");
 
       // Response
       var response = await http.Response.fromStream(await request.send());
-      log("Response from $uri : \n" + response.body);
+      log("Response from $uri : \n${response.body}");
       responseBody = response.body;
 
       // Decode
       Map<String, dynamic> decoded = jsonDecode(responseBody);
       bool sukses = decoded["Sukses"] == "Y";
       String pesan = decoded["Pesan"];
-      _initialPhoto = baseURL + "assets/images/lampiran/" + decoded["Foto"];
+      _initialPhoto = "${baseURL}assets/images/lampiran/" + decoded["Foto"];
 
       if (sukses) {
         if (mounted) {
@@ -766,10 +764,9 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
                             child: TextField(
                           focusNode: _focusSearch,
                           decoration: InputDecoration(
-                              hintText: 'Cari Berdasarkan ' +
-                                  _searchKey
+                              hintText: 'Cari Berdasarkan ${_searchKey
                                       .replaceAll(RegExp('[\\W_]+'), ' ')
-                                      .toUpperCase(),
+                                      .toUpperCase()}',
                               prefixIcon: IconButton(
                                   icon: const Icon(Icons.cancel),
                                   onPressed: () {
@@ -816,12 +813,12 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
                               a["$_sortColumn"].compareTo(b["$_sortColumn"]));
                         }
                         // ignore: non_constant_identifier_names
-                        var _range_top =
+                        var range_top =
                             _currentPerPage < _sourceFiltered.length
                                 ? _currentPerPage
                                 : _sourceFiltered.length;
                         _source =
-                            _sourceFiltered.getRange(0, _range_top).toList();
+                            _sourceFiltered.getRange(0, range_top).toList();
                         _searchKey = value;
 
                         _isLoading = false;
@@ -860,8 +857,8 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
                               value: _currentPerPage,
                               items: _perPages
                                   .map((e) => DropdownMenuItem(
-                                        child: Text("$e"),
                                         value: e,
+                                        child: Text("$e"),
                                       ))
                                   .toList(),
                               onChanged: (value) {
@@ -873,9 +870,7 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
                         ),
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10),
-                        child: Text("$_currentPage - " +
-                            (_currentPage + _currentPerPage - 1).toString() +
-                            " dari $_total"),
+                        child: Text("$_currentPage - ${_currentPage + _currentPerPage - 1} dari $_total"),
                       ),
                       IconButton(
                         icon: const Icon(
@@ -885,9 +880,9 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
                         onPressed: _currentPage == 1
                             ? null
                             : () {
-                                var _nextSet = _currentPage - _currentPerPage;
+                                var nextSet = _currentPage - _currentPerPage;
                                 setState(() {
-                                  _currentPage = _nextSet > 1 ? _nextSet : 1;
+                                  _currentPage = nextSet > 1 ? nextSet : 1;
                                   _resetData(start: _currentPage - 1);
                                 });
                               },
@@ -898,13 +893,13 @@ class _StokAwalExploreState extends State<StokAwalExplore> {
                         onPressed: _currentPage + _currentPerPage - 1 > _total
                             ? null
                             : () {
-                                var _nextSet = _currentPage + _currentPerPage;
+                                var nextSet = _currentPage + _currentPerPage;
 
                                 setState(() {
-                                  _currentPage = _nextSet < _total
-                                      ? _nextSet
+                                  _currentPage = nextSet < _total
+                                      ? nextSet
                                       : _total - _currentPerPage;
-                                  _resetData(start: _nextSet - 1);
+                                  _resetData(start: nextSet - 1);
                                 });
                               },
                         padding: const EdgeInsets.symmetric(horizontal: 10),

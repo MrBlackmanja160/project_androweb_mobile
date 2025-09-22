@@ -48,7 +48,7 @@ class _GantiPasswordPageState extends State<GantiPasswordPage> {
     );
   }
 
-  _saveLoginInfo(dynamic response) async {
+  Future<void> _saveLoginInfo(dynamic response) async {
     String success = response["Sukses"];
     String message = response["Pesan"];
 

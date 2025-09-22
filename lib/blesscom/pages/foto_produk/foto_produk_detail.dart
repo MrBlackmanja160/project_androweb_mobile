@@ -94,15 +94,15 @@ class _FotoProdukDetailState extends State<FotoProdukDetail> {
 
   final List<int> _perPages = [5, 10, 20, 50];
   int _total = 100;
-  int _currentPerPage = 10;
+  final int _currentPerPage = 10;
   List<bool>? _expanded;
-  String _searchKey = "barang";
+  final String _searchKey = "barang";
   final FocusNode _focusSearch = FocusNode();
   bool _loadingUploadPhoto = false;
   String _initialPhoto = "";
 
-  int _currentPage = 1;
-  bool _isSearch = false;
+  final int _currentPage = 1;
+  final bool _isSearch = false;
   // ignore: deprecated_member_use, prefer_final_fields
   List<Map<String, dynamic>> _sourceOriginal = <Map<String, dynamic>>[];
   // ignore: deprecated_member_use
@@ -110,11 +110,11 @@ class _FotoProdukDetailState extends State<FotoProdukDetail> {
   // ignore: deprecated_member_use
   List<Map<String, dynamic>> _source = <Map<String, dynamic>>[];
   // ignore: deprecated_member_use
-  List<Map<String, dynamic>> _selecteds = <Map<String, dynamic>>[];
+  final List<Map<String, dynamic>> _selecteds = <Map<String, dynamic>>[];
   // ignore: unused_field
-  final String? _selectableKey = "namalengkap";
+  final String _selectableKey = "namalengkap";
   String? _sortColumn;
-  bool _sortAscending = true;
+  final bool _sortAscending = true;
   bool _isLoading = true;
   // ignore: unused_field
   final bool _showSelect = true;
@@ -122,11 +122,11 @@ class _FotoProdukDetailState extends State<FotoProdukDetail> {
 
   DateTime selectedDate = DateTime.now();
 
-  double _grandTotal = 0;
+  final double _grandTotal = 0;
 
   Widget _dropContainer(data) {
     // ignore: unused_local_variable
-    List<Widget> _children = data.entries.map<Widget>((entry) {
+    List<Widget> children = data.entries.map<Widget>((entry) {
       Widget w = Row(
         children: [
           Text(entry.key.toString()),
@@ -284,7 +284,7 @@ class _FotoProdukDetailState extends State<FotoProdukDetail> {
     }
   }
 
-  _resetData({start = 0}) async {
+  Future<void> _resetData({start = 0}) async {
     setState(() => _isLoading = true);
     var expandedLen =
         _total - start < _currentPerPage ? _total - start : _currentPerPage;
@@ -296,7 +296,7 @@ class _FotoProdukDetailState extends State<FotoProdukDetail> {
     });
   }
 
-  _filterData(value) {
+  void _filterData(value) {
     setState(() => _isLoading = true);
 
     try {
@@ -312,9 +312,9 @@ class _FotoProdukDetailState extends State<FotoProdukDetail> {
       }
 
       _total = _sourceFiltered.length;
-      var _rangeTop = _total < _currentPerPage ? _total : _currentPerPage;
-      _expanded = List.generate(_rangeTop, (index) => false);
-      _source = _sourceFiltered.getRange(0, _rangeTop).toList();
+      var rangeTop = _total < _currentPerPage ? _total : _currentPerPage;
+      _expanded = List.generate(rangeTop, (index) => false);
+      _source = _sourceFiltered.getRange(0, rangeTop).toList();
     } catch (e) {
       Helper.showSnackBar(context, e.toString());
     }
@@ -368,12 +368,12 @@ class _FotoProdukDetailState extends State<FotoProdukDetail> {
               Navigator.of(context).pop();
               _deleteItem(data);
             },
+            style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
             child: const Icon(
               FontAwesomeIcons.trash,
               size: 18,
             ),
-            style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -398,9 +398,9 @@ class _FotoProdukDetailState extends State<FotoProdukDetail> {
               _deleteItemConfirm(data);
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -472,9 +472,9 @@ class _FotoProdukDetailState extends State<FotoProdukDetail> {
               _postingConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -558,9 +558,9 @@ class _FotoProdukDetailState extends State<FotoProdukDetail> {
               _deleteMasterConfirm();
               Navigator.of(context).pop();
             },
-            child: const Text("Ya"),
             style: ButtonStyle(
-                backgroundColor: MaterialStateProperty.all(Colors.red)),
+                backgroundColor: WidgetStateProperty.all(Colors.red)),
+            child: const Text("Ya"),
           ),
           ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -643,18 +643,18 @@ class _FotoProdukDetailState extends State<FotoProdukDetail> {
         await http.MultipartFile.fromPath("foto", value),
       );
 
-      log("Sending data to $uri: \n " + request.fields.toString());
+      log("Sending data to $uri: \n ${request.fields}");
 
       // Response
       var response = await http.Response.fromStream(await request.send());
-      log("Response from $uri : \n" + response.body);
+      log("Response from $uri : \n${response.body}");
       responseBody = response.body;
 
       // Decode
       Map<String, dynamic> decoded = jsonDecode(responseBody);
       bool sukses = decoded["Sukses"] == "Y";
       String pesan = decoded["Pesan"];
-      _initialPhoto = baseURL + "assets/images/lampiran/" + decoded["Foto"];
+      _initialPhoto = "${baseURL}assets/images/lampiran/" + decoded["Foto"];
 
       if (sukses) {
         if (mounted) {

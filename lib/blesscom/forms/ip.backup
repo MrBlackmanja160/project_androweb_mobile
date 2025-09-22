@@ -1,0 +1,359 @@
+import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
+
+import 'package:kalbemd/Helper/helper.dart';
+import 'package:kalbemd/blesscom/forms/input_photo_save.dart';
+import 'package:kalbemd/blesscom/models/model_dropdown.dart';
+import 'package:kalbemd/blesscom/forms/input_date.dart';
+import 'package:kalbemd/blesscom/forms/input_dropdown.dart';
+import 'package:kalbemd/blesscom/forms/input_photo.dart';
+import 'package:kalbemd/blesscom/forms/input_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+
+class InputBuilder extends StatefulWidget {
+  final List<Map<String, dynamic>> ieMaster;
+  final Function(dynamic)? onSubmit;
+  final String submitLabel;
+  final String actionUrl;
+  final bool enabled;
+  final bool disabledButton;
+  final Function(String fieldName, dynamic newValue, {String? displayText})? onFieldChanged;
+
+  const InputBuilder({
+    required this.ieMaster,
+    this.onSubmit,
+    this.submitLabel = "OK",
+    this.actionUrl = "",
+    this.enabled = true,
+    this.disabledButton = false,
+    this.onFieldChanged,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  _InputBuilderState createState() => _InputBuilderState();
+}
+
+class _InputBuilderState extends State<InputBuilder> {
+  bool _loading = false;
+  final GlobalKey<FormState> _formKey = GlobalKey();
+  final Map<String, dynamic> _values = {};
+  final List<Widget> _widgets = [];
+
+  /// ---------- utilities ----------
+  String? _validatorRequired(String? value) {
+    if (value == null || value.isEmpty) return 'Harap diisi';
+    return null;
+  }
+
+  dynamic _readForCompare(String key) {
+    bool wantText = false;
+    if (key.endsWith('#text')) {
+      wantText = true;
+      key = key.substring(0, key.length - 5);
+    }
+    final v = _values[key];
+
+    if (v is TextEditingController) return v.text;
+    if (v is ModelDropdown) return wantText ? v.text : v.id;
+    if (v is DateTime) return DateFormat('yyyy-MM-dd').format(v);
+    return v;
+  }
+
+  bool _equals(dynamic a, dynamic b) {
+    if (b is List) {
+      for (final item in b) {
+        if (_equals(a, item)) return true;
+      }
+      return false;
+    }
+    return '${a ?? ''}' == '${b ?? ''}';
+  }
+
+  bool _shouldShow(Map<String, dynamic> input) {
+    final cond = input['showif'];
+    if (cond == null) return true;
+    if (cond is! Map) return true;
+
+    for (final entry in cond.entries) {
+      final key = entry.key.toString();
+      final expected = entry.value;
+      final actual = _readForCompare(key);
+      if (!_equals(actual, expected)) return false;
+    }
+    return true;
+  }
+
+  void _rebuild() {
+    setState(() {
+      _buildForm();
+    });
+  }
+
+  void _buildForm() {
+    // Clear all
+    _widgets.clear();
+
+    // Build widgets
+    widget.ieMaster.asMap().forEach((index, input) {
+      //perulangan widget disini!!
+
+      // Get properties
+      String nm = input["nm"] ?? "";
+      String tempId = input["temp_id"] ?? "";
+      String jns = input["jns"] ?? "";
+      String label = input["label"] ?? "";
+      String ajaxurl = input["ajaxurl"] ?? "";
+      String sourceKolom = input["source_kolom"] ?? "";
+      String customquery = input["customquery"] ?? "";
+      String idparent = input["idparent"] ?? "";
+      String idchild = input["idchild"] ?? "";
+      String required = input["required"] ?? "";
+      String readonly = input["readonly"] ?? "";
+      String value = input["value"]?.toString() ?? '';
+      String valueText = input["valuetext"]?.toString() ?? '';
+      int mininputchar = int.tryParse('${input["mininputchar"] ?? '0'}') ?? 0;
+      String gallery = input["gallery"] ?? "T";
+
+      // Flags
+      bool isRequired = required == "Y";
+      bool isReadOnly = readonly == "Y" || !widget.enabled;
+      bool isGallery = gallery == "Y";
+
+      if (!_shouldShow(input)) return;
+
+      switch (jns) {
+        case "hidden":
+          _values[nm] = value;
+          break;
+
+        case "text":
+          _values[nm] = _values[nm] is TextEditingController
+              ? _values[nm]
+              : TextEditingController(text: value);
+          _widgets.add(InputText(
+            controller: _values[nm],
+            label: label,
+            validator: isRequired ? _validatorRequired : null,
+            readOnly: isReadOnly,
+            enabled: !isReadOnly,
+          ));
+          break;
+
+        case "number":
+          _values[nm] = _values[nm] is TextEditingController
+              ? _values[nm]
+              : TextEditingController(text: value);
+          _widgets.add(InputText(
+            controller: _values[nm],
+            label: label,
+            validator: isRequired ? _validatorRequired : null,
+            keyboardType: TextInputType.number,
+            inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+            readOnly: isReadOnly,
+            enabled: !isReadOnly,
+          ));
+          break;
+
+        case "selcustomqueryAjax":
+          _values[nm] = (_values[nm] is ModelDropdown)
+              ? _values[nm]
+              : ModelDropdown(id: value, text: valueText);
+          _values['${nm}dropdown'] =
+              _values['${nm}dropdown'] is TextEditingController
+                  ? _values['${nm}dropdown']
+                  : TextEditingController(text: valueText);
+
+          _widgets.add(InputDropdown(
+            value: _values[nm],
+            nm: nm,
+            controller: _values['${nm}dropdown'],
+            ajaxUrl: ajaxurl,
+            sourceKolom: sourceKolom,
+            customQuery: customquery,
+            label: label,
+            hint: label,
+            hintSearch: "Pencarian",
+            idparent: idparent,
+            minInputChar: mininputchar,
+            validator: isRequired ? _validatorRequired : null,
+            readOnly: isReadOnly,
+            onChange: (val) {
+              setState(() {
+                if (val is ModelDropdown) {
+                  _values[nm] = val;
+                  _values["${nm}_text"] = val.text;
+                } else {
+                  _values[nm] = val;
+                  _values["${nm}_text"] = val?.toString();
+                }
+
+                _rebuild();
+              });
+
+              if (val is ModelDropdown) {
+                widget.onFieldChanged?.call(nm, val.id, displayText: val.text);
+              } else {
+                widget.onFieldChanged?.call(nm, val);
+              }
+            },
+          ));
+          break;
+
+        case "date":
+          if (_values[nm] is! DateTime) _values[nm] = null;
+          _widgets.add(InputDate(
+            label: label,
+            hint: label,
+            validator: isRequired ? _validatorRequired : null,
+            readOnly: isReadOnly,
+            onChange: (val) {
+              setState(() {
+                if (val != null) _values[nm] = val;
+                _rebuild();
+              });
+              widget.onFieldChanged?.call(nm, val);
+            },
+          ));
+          break;
+
+        case "croppie":
+          _widgets.add(InputPhoto(
+            label: label,
+            enabled: !isReadOnly,
+            initialValue: value,
+            gallery: isGallery,
+            onChange: (val) {
+              setState(() {
+                _values[nm] = val;
+              });
+              widget.onFieldChanged?.call(nm, val);
+            },
+          ));
+          break;
+
+        case "croppiesave":
+          _widgets.add(InputPhotoSave(
+            label: label,
+            enabled: !isReadOnly,
+            initialValue: value,
+            gallery: isGallery,
+            temp_id: tempId,
+            onChange: (val) {
+              setState(() {
+                _values[nm] = val;
+              });
+              widget.onFieldChanged?.call(nm, val);
+            },
+          ));
+          break;
+
+        default:
+          _widgets.add(Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Text("'$jns' Not Implemented yet"),
+          ));
+          break;
+      }
+    });
+  }
+
+  void _submit() {
+    if (_formKey.currentState!.validate()) sendHttpPostMultipart();
+  }
+
+  Future<void> sendHttpPostMultipart() async {
+    String responseBody = "";
+    try {
+      if (mounted) setState(() => _loading = true);
+
+      final Uri uri = Uri.parse(widget.actionUrl);
+      final request = http.MultipartRequest("POST", uri);
+
+      for (final input in widget.ieMaster) {
+        final String nm = input["nm"] ?? '';
+        final String jns = input["jns"] ?? '';
+        final bool excludeIfHidden = input['excludeIfHidden'] == true;
+        if (!_shouldShow(input) && excludeIfHidden) continue;
+        final dynamic value = _values[nm];
+
+        switch (jns) {
+          case "hidden":
+            request.fields[nm] = '${value ?? ''}';
+            break;
+          case "text":
+          case "number":
+            request.fields[nm] = value is TextEditingController ? value.text : '';
+            break;
+          case "selcustomqueryAjax":
+            if (value is ModelDropdown) request.fields[nm] = value.id ?? '';
+            break;
+          case "date":
+            if (value is DateTime) request.fields[nm] = DateFormat('yyyy-MM-dd').format(value);
+            break;
+          case "croppie":
+            if (value != null && value.toString().isNotEmpty) {
+              final file = File(value.toString());
+              if (file.existsSync()) request.files.add(await http.MultipartFile.fromPath(nm, file.path));
+              else request.fields[nm] = value.toString();
+            }
+            break;
+          case "croppiesave":
+            if (value != null && value.toString().isNotEmpty) request.fields[nm] = value.toString();
+            break;
+        }
+      }
+
+      final response = await http.Response.fromStream(await request.send());
+      responseBody = response.body;
+      widget.onSubmit?.call(jsonDecode(response.body));
+    } on SocketException {
+      if (mounted) Helper.showSnackBar(context, "No internet connection");
+    } on HttpException {
+      if (mounted) Helper.showSnackBar(context, "Couldn't connect to server");
+    } on FormatException {
+      if (mounted) Helper.showAlert(context: context, message: "Bad response format", details: responseBody, type: AlertType.error);
+    } on http.ClientException {
+      if (mounted) Helper.showSnackBar(context, "Client error");
+    } finally {
+      if (mounted) setState(() => _loading = false);
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _buildForm();
+  }
+
+  @override
+  void didUpdateWidget(covariant InputBuilder oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    _buildForm();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          Column(children: _widgets),
+          SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: !_loading && !widget.disabledButton ? _submit : null,
+              child: !_loading
+                  ? Text(widget.submitLabel)
+                  : const SizedBox(height: 20, width: 20, child: CircularProgressIndicator()),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

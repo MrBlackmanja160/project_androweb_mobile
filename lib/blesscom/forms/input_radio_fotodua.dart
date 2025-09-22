@@ -50,7 +50,7 @@ class InputRadioFotoDua extends StatefulWidget {
 class _InputRadioFotoDuaState extends State<InputRadioFotoDua> {
   final List<bool> _selectedytPemasangan = <bool>[false, false];
   bool _ytpemasangan = false;
-  bool _ytpemasangan2 = true;
+  final bool _ytpemasangan2 = true;
   bool vertical = false;
 
   // start ini untuk input foto
@@ -67,8 +67,7 @@ class _InputRadioFotoDuaState extends State<InputRadioFotoDua> {
     for (int i = 0; i < value.length; i += length) {
       int offset = i + length;
       pieces +=
-          value.substring(i, offset >= value.length ? value.length : offset) +
-              "\n";
+          "${value.substring(i, offset >= value.length ? value.length : offset)}\n";
     }
     return pieces;
   }
@@ -90,20 +89,20 @@ class _InputRadioFotoDuaState extends State<InputRadioFotoDua> {
 
     if (_photo != null) {
       _image = _photo;
-      String _addressData = "";
-      _addressData = await Helper.getPrefs("_addressData");
+      String addressData = "";
+      addressData = await Helper.getPrefs("_addressData");
       String lat = await Helper.getPrefs("lat");
       String lng = await Helper.getPrefs("lng");
       String namadepan = await Helper.getPrefs("namadepan");
       String namabelakang = await Helper.getPrefs("namabelakang");
       String now = DateFormat('dd-MM-yyyy kk:mm').format(DateTime.now());
 
-      String _addressDataSplit = splitByLength(_addressData, 80);
-      _addressDataSplit += namadepan + " " + namabelakang + "\n";
-      _addressDataSplit += lat + "," + lng + "\n";
-      _addressDataSplit += now;
+      String addressDataSplit = splitByLength(addressData, 80);
+      addressDataSplit += "$namadepan $namabelakang\n";
+      addressDataSplit += "$lat,$lng\n";
+      addressDataSplit += now;
 
-      _addressDataSplit = (!widget.gallery) ? _addressDataSplit : "";
+      addressDataSplit = (!widget.gallery) ? addressDataSplit : "";
 
       //split address data per 80 character enter .
       // var t = await _photo.readAsBytes();
@@ -116,7 +115,7 @@ class _InputRadioFotoDuaState extends State<InputRadioFotoDua> {
       imgBytes = Uint8List.fromList(t);
       watermarkedImgBytes = await ImageWatermark.addTextWatermark(
         imgBytes: imgBytes,
-        watermarkText: _addressDataSplit,
+        watermarkText: addressDataSplit,
         dstX: 10,
         dstY: 10,
         color: Colors.white,

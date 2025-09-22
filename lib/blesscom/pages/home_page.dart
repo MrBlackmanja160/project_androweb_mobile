@@ -5,7 +5,7 @@ import 'package:kalbemd/blesscom/pages/check_in/check_in.dart';
 import 'package:kalbemd/blesscom/widgets/card_checkin.dart';
 import 'package:kalbemd/blesscom/widgets/menu_list.dart';
 import 'package:flutter/material.dart';
-import 'package:package_info/package_info.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          appName.toUpperCase() + " ",
+                          "${appName.toUpperCase()} ",
                           style: textStyleBigBold.copyWith(
                               color: Theme.of(context).primaryColor),
                         ),

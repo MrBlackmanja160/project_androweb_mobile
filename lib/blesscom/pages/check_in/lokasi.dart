@@ -15,8 +15,8 @@ class Lokasi extends StatefulWidget {
 
 class _LokasiState extends State<Lokasi> {
   LocationData? _currentPosition;
-  String _address = "";
-  Location location = new Location();
+  final String _address = "";
+  Location location = Location();
 
   @override
   void initState() {
@@ -60,22 +60,22 @@ class _LokasiState extends State<Lokasi> {
     );
   }
 
-  fetchLocation() async {
-    bool _serviceEnabled;
-    PermissionStatus _permissionGranted;
+  Future<void> fetchLocation() async {
+    bool serviceEnabled;
+    PermissionStatus permissionGranted;
 
-    _serviceEnabled = await location.serviceEnabled();
-    if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
-      if (!_serviceEnabled) {
+    serviceEnabled = await location.serviceEnabled();
+    if (!serviceEnabled) {
+      serviceEnabled = await location.requestService();
+      if (!serviceEnabled) {
         return;
       }
     }
 
-    _permissionGranted = await location.hasPermission();
-    if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
-      if (_permissionGranted != PermissionStatus.granted) {
+    permissionGranted = await location.hasPermission();
+    if (permissionGranted == PermissionStatus.denied) {
+      permissionGranted = await location.requestPermission();
+      if (permissionGranted != PermissionStatus.granted) {
         return;
       }
     }

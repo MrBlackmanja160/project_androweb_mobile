@@ -95,7 +95,7 @@ class _BokiImageNetworkState extends State<BokiImageNetwork> {
                   _errorMessage,
                   overflow: TextOverflow.ellipsis,
                   style: textStyleSmall.copyWith(
-                      color: Theme.of(context).errorColor),
+                      color: Theme.of(context).colorScheme.error),
                 )
               : const Icon(
                   FontAwesomeIcons.unlink,

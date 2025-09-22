@@ -1,11 +1,8 @@
 import 'package:kalbemd/Blesscom/Pages/home_page.dart';
 import 'package:kalbemd/blesscom/pages/archievment/archievment.dart';
 import 'package:kalbemd/blesscom/pages/backdate_page.dart';
-import 'package:kalbemd/blesscom/pages/check_in/lokasi.dart';
 import 'package:kalbemd/blesscom/pages/log_activity/log_activity.dart';
 import 'package:kalbemd/blesscom/pages/profil/profil_page.dart';
-import 'package:kalbemd/blesscom/pages/log_produk/log_produk.dart';
-import 'package:kalbemd/blesscom/pages/log_uang/log_uang.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
