@@ -18,8 +18,8 @@ class ModelJenisFotoSMDItem {
   String idjenisnds;
   String jenisnds;
   String kelompoknds;
-  String? fotoRakNdb;          
-  String? idketeranganRakNdb;  
+  String? fotoRakNdb;
+  String? idketeranganRakNdb;
   String? keteranganRakNdb;
 
   ModelJenisFotoSMDItem({

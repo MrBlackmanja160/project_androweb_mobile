@@ -1,12 +1,27 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:label="kalbemd"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true"
+        android:networkSecurityConfig="@xml/network_security_config">
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="MASUKKAN_API_KEY_ANDA_DI_SINI" />
+
+        <!-- Disable Impeller (Vulkan) to reduce driver spam/freezes on some devices -->
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableImpeller"
+            android:value="false" />
+
+        <!-- Enable Back Invoked Callback (Android 13+) to remove log warnings -->
+        <meta-data
+            android:name="io.flutter.embedding.android.EnableOnBackInvokedCallback"
+            android:value="true" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"

@@ -128,39 +128,38 @@ class _FotoSMDSubdetailAddState extends State<FotoSMDSubdetailAdd> {
             _initForm();
           });
         },
-      },
-      {
+        },
+        {
         "nm": "foto_rak_ndb",
         "jns": "croppiesave",
         "label": "Foto Rak NDB",
-        "required": "Y", 
+        "required": "Y",
         "temp_id": widget.masterSub.tempid ?? "",
-        "customquery": widget.queryFotoRakNdb,
         "value": (widget.item?.fotoRakNdb?.isNotEmpty ?? false)
             ? "$baseURL/assets/images/lampiran/${widget.item!.fotoRakNdb!}"
             : "",
         "showif": {
-          "idkelompoknds#text": "Rak NDB",
-          "idjenisnds#text": "Ada Rak NDB"
+          "idkelompoknds#value": "ce42f60e-87c5-11f0-bcd9-5c80b6616b14", 
+          "idjenisnds#value":    "86901849-87c6-11f0-bcd9-5c80b6616b14"  
         },
-        "excludeIfHidden": true,
-      },
-      {
-        "nm": "keterangan_rak_ndb",
-        "jns": "text",
-        "label": "Keterangan Rak NDB",
-        "required": "Y", 
-        "customquery": widget.queryKeteranganRakNdb,
-        "value": (widget.item?.keteranganRakNdb?.isNotEmpty ?? false) &&
-                widget.item!.keteranganRakNdb!.trim() != "-"
-            ? widget.item!.keteranganRakNdb!.trim()
-            : "",
-        "showif": {
-          "idkelompoknds#text": "Rak NDB",
-          "idjenisnds#text": "Ada Rak NDB"
+        "excludeIfHidden": true
         },
-        "excludeIfHidden": true,
-      },
+        {
+          "nm": "keterangan_rak_ndb",
+          "jns": "text",
+          "label": "Keterangan Rak NDB",
+          "required": "Y",  
+          "customquery": widget.queryKeteranganRakNdb, 
+          "value": (widget.item?.keteranganRakNdb?.isNotEmpty ?? false) &&
+                  widget.item!.keteranganRakNdb!.trim() != "-"
+              ? widget.item!.keteranganRakNdb!.trim()
+              : "",
+          "showif": {
+            "idkelompoknds#value": "ce42f60e-87c5-11f0-bcd9-5c80b6616b14",
+            "idjenisnds#value":    "86901849-87c6-11f0-bcd9-5c80b6616b14"
+          },
+          "excludeIfHidden": true
+        },
       {
         "nm": "idbrand",
         "jns": "selcustomqueryAjax",

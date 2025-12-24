@@ -2,7 +2,7 @@ const String appName = "BTrack";
 const String appNameSub = "Kalbe MD";
 
 // const String baseURL = "https://kalbe-md.blesscom1.com/";
-const String baseURL = "http://192.168.2.33/kalbe-md-nds-web/";
+const String baseURL = "http://192.168.2.16/kalbe-md-nds-web1/";
 
 // const String urlToko = baseURL + "Parse_android/getToko";
 const String tokenAplikasi = "2325427f-ba13-11eb-a15e-3c970e7a4464";
@@ -35,6 +35,29 @@ const String urlPembelianDetailAdd =
 const String urlPembelianDetailDelete =
     "${baseURL}Parse_android/hapusDetailPembelianProduk";
 
+// PEMBELIAN SUPLYER
+const String urlPembelianSuplyer =
+    "${baseURL}Parse_android/getDataPembelianSuplyer";
+const String urlPembelianSuplyerAdd =
+    "${baseURL}Parse_android/saveMasterPembelianSuplyer";
+const String urlPembelianSuplyerDelete =
+    "${baseURL}Parse_android/hapusDataPembelianSuplyer";
+const String urlPembelianSuplyerDetail =
+    "${baseURL}Parse_android/getDetailPembelianSuplyer";
+const String urlPembelianSuplyerUploadNotaPdf =
+    "${baseURL}Parse_android/uploadNotaPdfPembelianSuplyer";
+
+    
+
+// HARGA JUAL SUPLYER 
+const String urlGetHargaJualSuplyer =
+    "${baseURL}Parse_android/getHargaJualSuplyer";
+    
+    // THERMAL PRINT - PEMBELIAN SUPLYER
+const String urlCetakThermalPembelianSuplyer =
+    "${baseURL}Parse_android/cetakThermalPembelianSuplyer";
+
+    
 // LOG PRODUK
 const String urlLogProduk = "${baseURL}Parse_android/getLogProduk";
 const String urlArchievment = "${baseURL}Parse_android/getArchievment";

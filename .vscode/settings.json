@@ -1,6 +1,7 @@
 {
-    "java.configuration.updateBuildConfiguration": "automatic",
+  "java.configuration.updateBuildConfiguration": "automatic",
+  "codex.apiBaseUrl": "http://localhost:3000",
 
-    // Tambahan Codex khusus untuk workspace ini
-    "codex.apiBaseUrl": "http://localhost:3000"
+  "dart.flutterSdkPath": "D:\\flutter_clean\\flutter",
+  "dart.sdkPath": "D:\\flutter_clean\\flutter\\bin\\cache\\dart-sdk"
 }

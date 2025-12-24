@@ -13,13 +13,14 @@ import 'package:kalbemd/blesscom/pages/input_promo/input_promo.dart';
 import 'package:kalbemd/blesscom/pages/input_stok/input_stok.dart';
 import 'package:kalbemd/blesscom/pages/oos/oos.dart';
 import 'package:kalbemd/blesscom/pages/pembelian/pembelian.dart';
+// IMPORT YANG BENAR UNTUK PEMBELIAN SUPLYER
+import 'package:kalbemd/blesscom/pages/pembelian_suplyer/pembelian.dart' as ps; 
 import 'package:kalbemd/blesscom/pages/pengembalian/pengembalian.dart';
 import 'package:kalbemd/blesscom/pages/penjualan/penjualan.dart';
 import 'package:kalbemd/blesscom/pages/penjualan_harian/penjualan_harian.dart';
 import 'package:kalbemd/blesscom/pages/produk_expired/produk_expired.dart';
 import 'package:kalbemd/blesscom/pages/returbarang/retur_barang.dart';
 import 'package:kalbemd/blesscom/pages/saldoakhir/saldo_akhir.dart';
-import 'package:kalbemd/blesscom/pages/saldoakhir/saldo_akhirold.dart';
 import 'package:kalbemd/blesscom/pages/setor_uang/setor_uang.dart';
 import 'package:kalbemd/blesscom/pages/stok_awal/stok_awal.dart';
 import 'package:kalbemd/blesscom/pages/stok_awal_backdate/stok_awal_backdate.dart';
@@ -112,7 +113,7 @@ class _MenuListState extends State<MenuList> {
     bool menuOos = widget.infoLog["infoLog"]["menu_oos"] == "Y";
     bool menuProdukExpired =
         widget.infoLog["infoLog"]["menu_produkexpired"] == "Y";
-     bool menuInputPromo = widget.infoLog["infoLog"]["menu_inputpromo"] == "Y";
+    bool menuInputPromo = widget.infoLog["infoLog"]["menu_inputpromo"] == "Y";
 
     // Clear all menus
     _menuItems.clear();
@@ -126,6 +127,15 @@ class _MenuListState extends State<MenuList> {
         onTap: _checkedIn && _typeIsDistributor ? _goToPembelian : null,
       ));
     }
+
+    // MENU BARU: Pembelian Suplyer
+    // Tampilkan menu ini (bisa ditambahkan logika permission if(menuPembelianSuplyer) nanti)
+    _menuItems.add(MenuItemMotoris(
+      image: "assets/images/tokoku.png",
+      icon: FontAwesomeIcons.truck,
+      name: "Pembelian Suplyer",
+      onTap: _checkedIn && _typeIsDistributor ? _goToPembelianSuplyer : null,
+    ));
 
     if (menuPenjualan) {
       _menuItems.add(MenuItemMotoris(
@@ -261,7 +271,7 @@ class _MenuListState extends State<MenuList> {
       ));
     }
 
-     if (menuInputPromo) {
+    if (menuInputPromo) {
       _menuItems.add(MenuItemMotoris(
         image: "assets/images/tokoku.png",
         icon: FontAwesomeIcons.bullhorn,
@@ -322,10 +332,9 @@ class _MenuListState extends State<MenuList> {
         onTap: _checkedIn && _typeIsDistributor ? _goProdukExpired : null,
       ));
     }
-
   }
 
-   void _goToInputPromo() {
+  void _goToInputPromo() {
     Navigator.of(context)
         .push(
           MaterialPageRoute(
@@ -458,6 +467,7 @@ class _MenuListState extends State<MenuList> {
   }
 
   void _goToKuesioner() {}
+
   void _goToFotoProduk() {
     Navigator.of(context)
         .push(
@@ -506,6 +516,24 @@ class _MenuListState extends State<MenuList> {
           MaterialPageRoute(
             builder: (context) => Pembelian(
               infoLog: widget.infoLog,
+            ),
+          ),
+        )
+        .then(
+          (value) => widget.onPop?.call(),
+        );
+  }
+
+  // NAVIGASI BARU: PEMBELIAN SUPLYER
+  void _goToPembelianSuplyer() {
+    Navigator.of(context)
+        .push(
+          MaterialPageRoute(
+            // GUNAKAN 'ps.PembelianSuplyer' karena sudah di-alias 'as ps'
+            // atau langsung 'PembelianSuplyer' jika import biasa
+            builder: (context) => ps.PembelianSuplyer(
+              infoLog: widget.infoLog,
+              master: widget.infoLog['master'] ?? {}, // Pass master jika ada
             ),
           ),
         )

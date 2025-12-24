@@ -53,23 +53,13 @@ class _InputBuilderSMDState extends State<InputBuilderSMD> {
   dynamic _readForCompare(String key) {
     var k = key;
     var wantText = false;
-    var wantValue = false;
-
     if (k.endsWith('#text')) {
       wantText = true;
       k = k.substring(0, k.length - 5);
-    } else if (k.endsWith('#value')) {
-      wantValue = true;
-      k = k.substring(0, k.length - 6);
     }
-
     final v = _values[k];
     if (v is TextEditingController) return v.text;
-    if (v is ModelDropdown) {
-      if (wantText) return v.text;
-      // default & #value: pakai id
-      return v.id;
-    }
+    if (v is ModelDropdown) return wantText ? v.text : v.id;
     if (v is DateTime) return DateFormat('yyyy-MM-dd').format(v);
     return v;
   }
@@ -93,7 +83,12 @@ class _InputBuilderSMDState extends State<InputBuilderSMD> {
   }
 
   void _persistIfNeeded(String nm, dynamic val) {
-    if (nm == "foto_rak_ndb" || nm == "keterangan_rak_ndb") {
+    if (nm == "foto_rak_ndb" ||
+        nm == "keterangan_rak_ndb" ||
+        nm == "foto_rak_ndb_before" ||
+        nm == "keterangan_rak_ndb_before" ||
+        nm == "foto_rak_ndb_after" ||
+        nm == "keterangan_rak_ndb_after") {
       _persistedValues[nm] = val;
     }
   }
@@ -123,7 +118,7 @@ class _InputBuilderSMDState extends State<InputBuilderSMD> {
       final bool isReadOnly = readonly == 'Y' || !widget.enabled;
       final bool isGallery = gallery == 'Y';
 
-      // Jika hidden, tetap simpan valuenya (untuk persist) tapi jangan render widgetnya
+      // kondisi hidden, tetap simpan valuenya
       if (!_shouldShow(input)) {
         if (_persistedValues.containsKey(nm)) {
           _values[nm] = _persistedValues[nm];
@@ -145,7 +140,9 @@ class _InputBuilderSMDState extends State<InputBuilderSMD> {
                   text: _persistedValues[nm] ?? value,
                 );
 
-          if (nm == "keterangan_rak_ndb") {
+          if (nm == "keterangan_rak_ndb" ||
+              nm == "keterangan_rak_ndb_before" ||
+              nm == "keterangan_rak_ndb_after") {
             _widgets.add(
               InputTextDua(
                 controller: _values[nm],
@@ -293,20 +290,11 @@ class _InputBuilderSMDState extends State<InputBuilderSMD> {
     }
   }
 
-  bool _isRakNdbRequiredNow() {
-    final cfg = widget.ieMaster.firstWhere(
-      (m) => m['nm'] == 'foto_rak_ndb',
-      orElse: () => const {},
-    );
-    if (cfg.isEmpty) return false;
-    return _shouldShow(cfg) == true;
-  }
-
   void _submit() {
     if (!_formKey.currentState!.validate()) return;
 
-    // Validasi berbasis kondisi tampilnya field rak NDB (bukan nama)
-    final needRak = _isRakNdbRequiredNow();
+    // Validasi kondisi Rak ada NDB terpenuhi
+    final jenisNdsText = _readForCompare("idjenisnds#text");
     final fotoRakNdb = _values["foto_rak_ndb"]?.toString() ?? "";
     final ketRakNdb = _values["keterangan_rak_ndb"] is TextEditingController
         ? _values["keterangan_rak_ndb"].text
@@ -317,7 +305,7 @@ class _InputBuilderSMDState extends State<InputBuilderSMD> {
           (m['value']?.toString().toLowerCase() == 'edit'),
     );
 
-    if (needRak) {
+    if (jenisNdsText == "Ada Rak NDB") {
       if (fotoRakNdb.isEmpty && !isEdit) {
         Helper.showAlert(
           context: context,
@@ -350,15 +338,6 @@ class _InputBuilderSMDState extends State<InputBuilderSMD> {
       for (final input in widget.ieMaster) {
         final String nm = (input['nm'] ?? '') as String;
         final String jns = (input['jns'] ?? '') as String;
-
-        // HORMATI excludeIfHidden: true
-        final bool visible = _shouldShow(input);
-        final bool excludeIfHidden = (input['excludeIfHidden'] == true);
-        if (!visible && excludeIfHidden) {
-          // Jangan kirim field yang hidden dan diminta exclude
-          continue;
-        }
-
         final dynamic value = _values[nm];
 
         switch (jns) {
@@ -394,7 +373,6 @@ class _InputBuilderSMDState extends State<InputBuilderSMD> {
                   await http.MultipartFile.fromPath(nm, file.path),
                 );
               } else {
-                // jika value sudah URL/string, kirim sebagai field biasa
                 request.fields[nm] = value.toString();
               }
             }
