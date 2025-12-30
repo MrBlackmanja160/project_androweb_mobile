@@ -2,7 +2,7 @@ const String appName = "BTrack";
 const String appNameSub = "Kalbe MD";
 
 // const String baseURL = "https://kalbe-md.blesscom1.com/";
-const String baseURL = "http://192.168.2.16/kalbe-md-nds-web1/";
+const String baseURL = "http://192.168.0.200/kalbe-md-nds-web1/";
 
 // const String urlToko = baseURL + "Parse_android/getToko";
 const String tokenAplikasi = "2325427f-ba13-11eb-a15e-3c970e7a4464";
